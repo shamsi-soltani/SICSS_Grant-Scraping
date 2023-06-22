@@ -1,0 +1,119 @@
+---
+title: "Projet SICCS Montreal 2023 de Shamsi Soltani"
+output: html_notebook
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = TRUE, # show warnings
+  message = TRUE, # show messages
+  error = TRUE, # do not interrupt generation in case of errors,
+  echo = TRUE  # show R code
+)
+library(pacman)
+p_load(knitr, 
+       tidyverse, tidytext, 
+       textdata, tm, 
+       maps, SnowballC, 
+       wordcloud, topicmodels, repoRter.nih)
+
+knitr::opts_chunk$set(echo = TRUE, tidy.opts = list(width.cutoff = 60), tidy = TRUE)
+```
+
+*Run* = *Cmd+Shift+Enter*. 
+*Insert Chunk* = *Cmd+Option+I*
+
+```{r}
+
+"repoRter.nih"
+
+```
+
+```{r}
+p_load(tidyverse,magrittr,rvest)
+setwd('/Users/ssoltani/Desktop/PhD coursework/Cours_SICSS_Montreal/grant funding project')
+rawHTML <- read_html("CIHR_suicide_research.html")
+
+#page_section <- html_node(rawHTML, css = '#frmSearchLocation > table > tbody > tr:nth-child(5) td')
+
+page_section <- html_node(rawHTML, xpath = '//br+//table//td')
+
+file <- html_text(page_section)
+
+#one method to break up text into different cells
+require(data.table)
+o = fread(file, sep = '\n', header = T)
+
+  #test 
+  #o = c('zy', 'x    y', '')
+
+#trim whitespace
+o$`Search Results` = str_trim(o$`Search Results`)
+
+#drop empty rows
+drop_list = o$`Search Results`==""
+o <- o[!drop_list, ]
+
+#drop rows saying "Details..."
+drop_list = o$`Search Results`== "Details..."
+o <- o[!drop_list, ]
+
+#some grant dates are in a 3-row format; merge when this is the case
+  #e.g. 21
+        #to
+        #22
+  # and not: 2023-24
+o$merge_list = o$`Search Results`== "to"
+  #sum(merge_list) #381
+```
+
+```{r}
+library(tidyverse)
+
+#flag consecutive rows which need merging
+p = o %>% 
+  mutate(merge_rows=
+           ifelse(merge_list==T ,
+              paste(row_number()-1, row_number()+1, sep = ":"),
+              NA),
+        merge_start =
+           ifelse(merge_list==T,
+              paste(row_number()-1)
+              ,NA)
+         ) %>% 
+  filter(merge_list==T)
+
+### not working
+##as.data.frame(p)
+o[p[[4]],]
+
+paste(o[[p$merge_rows]]
+
+  mutate(concated_column = o[merge_rows,])
+
+rbind(p, row3 = apply(p, 2, paste0, collapse = "-"))
+```
+
+
+
+```{r}
+
+input <- data_frame(text = file)
+input
+
+p_load(dplyr, lubridate)
+df <- matrix(input, ncol = 7, byrow = TRUE) %>% 
+  as_tibble() %>% 
+  mutate(V1 = mdy(V1), V2 = as.numeric(V2))
+
+
+
+data$text
+data <-
+  data %>% 
+  separate(text, into = c("text1", "text2", "text3", "text4", "text5", 
+                          "text6", "text7", "text8", "text9", "text10"), sep = "Back to text")
+```
+
+
+
+
