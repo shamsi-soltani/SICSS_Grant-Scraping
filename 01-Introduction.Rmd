@@ -1,0 +1,33 @@
+---
+title: "01-Introduction"
+author: ''
+date: "2023-06-27"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+
+Introduction {#chap:intro}
+============
+
+Pourquoi le sujet est important? {#sec:1-1}
+--------------
+
+
+
+
+Qu'est-ce qu'on sait sur le sujet? {#sec:2-1}
+--------------
+
+
+
+
+Quelles sont les limites? {#sec:3-1}
+--------------
+
+
+
+Qu'est-ce que nous voulons faire et comment nous voulons le faire ? {#sec:4-1}
+--------------
