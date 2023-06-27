@@ -25,19 +25,75 @@ knitr::opts_chunk$set(echo = TRUE, tidy.opts = list(width.cutoff = 60), tidy = T
 ```{r}
 #exploring repoRter.nih
 
+#define fields you want 
 data("nih_fields") 
-fields <- nih_fields %>%
-  filter(response_name %in% #specify the headers you want
-    c("appl_id", "terms", "activity_code", "project_title", "fiscal_year", "award_amount", "is_active", "project_start_date", "abstract_text","program_officers", "activity_type", #"org_names",
-  "organization_type")) %>% pull(include_name)
 
-req <- make_req(criteria = list(fiscal_years = 2021,
-                                include_active_projects = TRUE,
-                                org_names = c("Stanford", "New Haven")
-                                ),
-                include_fields = fields, limit = 50, message = FALSE)
+fields <- nih_fields %>%
+  filter(response_name %in% 
+    c("appl_id", "terms", "activity_code", "project_title", "fiscal_year", "award_amount", "is_active", "project_start_date", "abstract_text","program_officers", "activity_type" #, "organization", "organization_type"
+      )) %>% pull(include_name)
+
+
+# req <- make_req(criteria = list(fiscal_years = 2013:2023 #more recent active awards will be included
+#                                 #, include_active_projects = TRUE,
+#                                 ),
+#                 include_fields = fields, limit = 50, message = FALSE)
+# grants %>% glimpse(width = getOption("cli.width"))
+
+
+req <- make_req(criteria = list(advanced_text_search 
+                    = list(operator = "advanced",
+                    search_field = c("terms", "abstract", "projecttitle"),
+                    search_text = "(suicide) OR \"self-directed violence\""),
+             activity_codes = 'F31',
+             fiscal_years = 2012:2023
+             ),
+      include_fields = fields )
 
 grants <- get_nih_data(query = req, max_pages = 1, flatten_result=TRUE)
+    #remove max pages once query final if seeking more than 500 recs
+
+table(grants$activity_code) 
+  #N=225 F31 funded apps in last decade with suicide or self-directed violence as a title, narrative, or key word; 340 total in database
+```
+```{r text processing}
+# Create corpus
+corpus = Corpus(VectorSource(grants$abstract_text))
+
+#Conversion to Lowercase
+
+corpus = tm_map(corpus, PlainTextDocument)
+corpus = tm_map(corpus, tolower)
+
+#Removing Punctuation
+corpus = tm_map(corpus, removePunctuation)
+
+#Remove stopwords
+corpus = tm_map(corpus, removeWords, c("project", "summary", stopwords("english")))
+
+# Stemming
+corpus = tm_map(corpus, stemDocument)
+
+# Eliminate white spaces
+corpus = tm_map(corpus, stripWhitespace)
+
+# Look at first instance of corpus
+corpus[[1]][1]
+
+#Document term matrix
+DTM <- TermDocumentMatrix(corpus)
+mat <- as.matrix(DTM)
+f <- sort(rowSums(mat),decreasing=TRUE)
+dat <- data.frame(word = names(f),freq=f)
+
+head(dat, 5)
+```
+```{r wordcloud}
+#Text mining packages
+p_load(tm, SnowballC, "wordcloud","RColorBrewer")
+set.seed(100)
+
+wordcloud(words = dat$word, freq = dat$freq, random.order=TRUE)
 ```
 
 ```{r}

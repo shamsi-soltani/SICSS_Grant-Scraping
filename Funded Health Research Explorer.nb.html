@@ -1767,28 +1767,124 @@ Soltani</h1>
 <em>Cmd+Option+I</em></p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2V4cGxvcmluZyByZXBvUnRlci5uaWhcblxuZGF0YShcIm5paF9maWVsZHNcIikgXG5maWVsZHMgPC0gbmloX2ZpZWxkcyAlPiVcbiAgZmlsdGVyKHJlc3BvbnNlX25hbWUgJWluJSAjc3BlY2lmeSB0aGUgaGVhZGVycyB5b3Ugd2FudFxuICAgIGMoXCJhcHBsX2lkXCIsIFwidGVybXNcIiwgXCJhY3Rpdml0eV9jb2RlXCIsIFwicHJvamVjdF90aXRsZVwiLCBcImZpc2NhbF95ZWFyXCIsIFwiYXdhcmRfYW1vdW50XCIsIFwiaXNfYWN0aXZlXCIsIFwicHJvamVjdF9zdGFydF9kYXRlXCIsIFwiYWJzdHJhY3RfdGV4dFwiLFwicHJvZ3JhbV9vZmZpY2Vyc1wiLCBcImFjdGl2aXR5X3R5cGVcIiwgI1wib3JnX25hbWVzXCIsXG4gIFwib3JnYW5pemF0aW9uX3R5cGVcIikpICU+JSBwdWxsKGluY2x1ZGVfbmFtZSlcblxucmVxIDwtIG1ha2VfcmVxKGNyaXRlcmlhID0gbGlzdChmaXNjYWxfeWVhcnMgPSAyMDIxLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbmNsdWRlX2FjdGl2ZV9wcm9qZWN0cyA9IFRSVUUsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG9yZ19uYW1lcyA9IGMoXCJTdGFuZm9yZFwiLCBcIk5ldyBIYXZlblwiKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICApLFxuICAgICAgICAgICAgICAgIGluY2x1ZGVfZmllbGRzID0gZmllbGRzLCBsaW1pdCA9IDUwLCBtZXNzYWdlID0gRkFMU0UpXG5cbnJlcyA8LSBnZXRfbmloX2RhdGEocXVlcnkgPSByZXEsXG5tYXhfcGFnZXMgPSAxLCBmbGF0dGVuX3Jlc3VsdD1UUlVFKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2V4cGxvcmluZyByZXBvUnRlci5uaWhcblxuI2RlZmluZSBmaWVsZHMgeW91IHdhbnQgXG5kYXRhKFwibmloX2ZpZWxkc1wiKSBcblxuZmllbGRzIDwtIG5paF9maWVsZHMgJT4lXG4gIGZpbHRlcihyZXNwb25zZV9uYW1lICVpbiUgXG4gICAgYyhcImFwcGxfaWRcIiwgXCJ0ZXJtc1wiLCBcImFjdGl2aXR5X2NvZGVcIiwgXCJwcm9qZWN0X3RpdGxlXCIsIFwiZmlzY2FsX3llYXJcIiwgXCJhd2FyZF9hbW91bnRcIiwgXCJpc19hY3RpdmVcIiwgXCJwcm9qZWN0X3N0YXJ0X2RhdGVcIiwgXCJhYnN0cmFjdF90ZXh0XCIsXCJwcm9ncmFtX29mZmljZXJzXCIsIFwiYWN0aXZpdHlfdHlwZVwiICMsIFwib3JnYW5pemF0aW9uXCIsIFwib3JnYW5pemF0aW9uX3R5cGVcIlxuICAgICAgKSkgJT4lIHB1bGwoaW5jbHVkZV9uYW1lKVxuXG5cbiMgcmVxIDwtIG1ha2VfcmVxKGNyaXRlcmlhID0gbGlzdChmaXNjYWxfeWVhcnMgPSAyMDEzOjIwMjMgI21vcmUgcmVjZW50IGFjdGl2ZSBhd2FyZHMgd2lsbCBiZSBpbmNsdWRlZFxuIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMsIGluY2x1ZGVfYWN0aXZlX3Byb2plY3RzID0gVFJVRSxcbiMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICApLFxuIyAgICAgICAgICAgICAgICAgaW5jbHVkZV9maWVsZHMgPSBmaWVsZHMsIGxpbWl0ID0gNTAsIG1lc3NhZ2UgPSBGQUxTRSlcbiMgZ3JhbnRzICU+JSBnbGltcHNlKHdpZHRoID0gZ2V0T3B0aW9uKFwiY2xpLndpZHRoXCIpKVxuXG5cbnJlcSA8LSBtYWtlX3JlcShjcml0ZXJpYSA9IGxpc3QoYWR2YW5jZWRfdGV4dF9zZWFyY2ggXG4gICAgICAgICAgICAgICAgICAgID0gbGlzdChvcGVyYXRvciA9IFwiYWR2YW5jZWRcIixcbiAgICAgICAgICAgICAgICAgICAgc2VhcmNoX2ZpZWxkID0gYyhcInRlcm1zXCIsIFwiYWJzdHJhY3RcIiwgXCJwcm9qZWN0dGl0bGVcIiksXG4gICAgICAgICAgICAgICAgICAgIHNlYXJjaF90ZXh0ID0gXCIoc3VpY2lkZSkgT1IgXFxcInNlbGYtZGlyZWN0ZWQgdmlvbGVuY2VcXFwiXCIpLFxuICAgICAgICAgICAgIGFjdGl2aXR5X2NvZGVzID0gJ0YzMScsXG4gICAgICAgICAgICAgZmlzY2FsX3llYXJzID0gMjAxMjoyMDIzXG4gICAgICAgICAgICAgKSxcbiAgICAgIGluY2x1ZGVfZmllbGRzID0gZmllbGRzIClcbmBgYCJ9 -->
 <pre class="r"><code>#exploring repoRter.nih
 
+#define fields you want 
 data(&quot;nih_fields&quot;) 
+
 fields &lt;- nih_fields %&gt;%
-  filter(response_name %in% #specify the headers you want
-    c(&quot;appl_id&quot;, &quot;terms&quot;, &quot;activity_code&quot;, &quot;project_title&quot;, &quot;fiscal_year&quot;, &quot;award_amount&quot;, &quot;is_active&quot;, &quot;project_start_date&quot;, &quot;abstract_text&quot;,&quot;program_officers&quot;, &quot;activity_type&quot;, #&quot;org_names&quot;,
-  &quot;organization_type&quot;)) %&gt;% pull(include_name)
+  filter(response_name %in% 
+    c(&quot;appl_id&quot;, &quot;terms&quot;, &quot;activity_code&quot;, &quot;project_title&quot;, &quot;fiscal_year&quot;, &quot;award_amount&quot;, &quot;is_active&quot;, &quot;project_start_date&quot;, &quot;abstract_text&quot;,&quot;program_officers&quot;, &quot;activity_type&quot; #, &quot;organization&quot;, &quot;organization_type&quot;
+      )) %&gt;% pull(include_name)
 
-req &lt;- make_req(criteria = list(fiscal_years = 2021,
-                                include_active_projects = TRUE,
-                                org_names = c(&quot;Stanford&quot;, &quot;New Haven&quot;)
-                                ),
-                include_fields = fields, limit = 50, message = FALSE)
 
-res &lt;- get_nih_data(query = req,
-max_pages = 1, flatten_result=TRUE)</code></pre>
+# req &lt;- make_req(criteria = list(fiscal_years = 2013:2023 #more recent active awards will be included
+#                                 #, include_active_projects = TRUE,
+#                                 ),
+#                 include_fields = fields, limit = 50, message = FALSE)
+# grants %&gt;% glimpse(width = getOption(&quot;cli.width&quot;))
+
+
+req &lt;- make_req(criteria = list(advanced_text_search 
+                    = list(operator = &quot;advanced&quot;,
+                    search_field = c(&quot;terms&quot;, &quot;abstract&quot;, &quot;projecttitle&quot;),
+                    search_text = &quot;(suicide) OR \&quot;self-directed violence\&quot;&quot;),
+             activity_codes = &#39;F31&#39;,
+             fiscal_years = 2012:2023
+             ),
+      include_fields = fields )</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmV0cmlldmluZyBmaXJzdCBwYWdlIG9mIHJlc3VsdHMgKHVwIHRvIDUwIHJlY29yZHMpXG5tYXhfcGFnZXMgc2V0IHRvIDEgYnkgdXNlci4gUmVzdWx0IHNldCBjb250YWlucyA1NSBwYWdlcy4gT25seSBwYXJ0aWFsIHJlc3VsdHMgd2lsbCBiZSByZXRyaWV2ZWQuXG4ifQ== -->
-<pre><code>Retrieving first page of results (up to 50 records)
-max_pages set to 1 by user. Result set contains 55 pages. Only partial results will be retrieved.</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiVGhpcyBpcyB5b3VyIEpTT04gcGF5bG9hZDpcbntcbiAgICBcImNyaXRlcmlhXCI6IHtcbiAgICAgICAgXCJhZHZhbmNlZF90ZXh0X3NlYXJjaFwiOiB7XG4gICAgICAgICAgICBcIm9wZXJhdG9yXCI6IFwiYWR2YW5jZWRcIixcbiAgICAgICAgICAgIFwic2VhcmNoX2ZpZWxkXCI6IFwidGVybXMsYWJzdHJhY3QscHJvamVjdHRpdGxlXCIsXG4gICAgICAgICAgICBcInNlYXJjaF90ZXh0XCI6IFwiKHN1aWNpZGUpIE9SIFxcXCJzZWxmLWRpcmVjdGVkIHZpb2xlbmNlXFxcIlwiXG4gICAgICAgIH0sXG4gICAgICAgIFwiYWN0aXZpdHlfY29kZXNcIjogW1xuICAgICAgICAgICAgXCJGMzFcIlxuICAgICAgICBdLFxuICAgICAgICBcImZpc2NhbF95ZWFyc1wiOiBbXG4gICAgICAgICAgICAyMDEyLFxuICAgICAgICAgICAgMjAxMyxcbiAgICAgICAgICAgIDIwMTQsXG4gICAgICAgICAgICAyMDE1LFxuICAgICAgICAgICAgMjAxNixcbiAgICAgICAgICAgIDIwMTcsXG4gICAgICAgICAgICAyMDE4LFxuICAgICAgICAgICAgMjAxOSxcbiAgICAgICAgICAgIDIwMjAsXG4gICAgICAgICAgICAyMDIxLFxuICAgICAgICAgICAgMjAyMixcbiAgICAgICAgICAgIDIwMjNcbiAgICAgICAgXSxcbiAgICAgICAgXCJ1c2VfcmVsZXZhbmNlXCI6IGZhbHNlLFxuICAgICAgICBcImluY2x1ZGVfYWN0aXZlX3Byb2plY3RzXCI6IGZhbHNlLFxuICAgICAgICBcImV4Y2x1ZGVfc3VicHJvamVjdHNcIjogZmFsc2UsXG4gICAgICAgIFwibXVsdGlfcGlfb25seVwiOiBmYWxzZSxcbiAgICAgICAgXCJuZXdseV9hZGRlZF9wcm9qZWN0c19vbmx5XCI6IGZhbHNlLFxuICAgICAgICBcInN1Yl9wcm9qZWN0X29ubHlcIjogZmFsc2VcbiAgICB9LFxuICAgIFwiaW5jbHVkZV9maWVsZHNcIjogW1xuICAgICAgICBcIkFwcGxJZFwiLFxuICAgICAgICBcIkZpc2NhbFllYXJcIixcbiAgICAgICAgXCJBY3Rpdml0eUNvZGVcIixcbiAgICAgICAgXCJBd2FyZEFtb3VudFwiLFxuICAgICAgICBcIklzQWN0aXZlXCIsXG4gICAgICAgIFwiUHJvZ3JhbU9mZmljZXJzXCIsXG4gICAgICAgIFwiUHJvamVjdFN0YXJ0RGF0ZVwiLFxuICAgICAgICBcIlRlcm1zXCIsXG4gICAgICAgIFwiQWJzdHJhY3RUZXh0XCIsXG4gICAgICAgIFwiUHJvamVjdFRpdGxlXCJcbiAgICBdLFxuICAgIFwib2Zmc2V0XCI6IDAsXG4gICAgXCJsaW1pdFwiOiA1MDBcbn1cblxuSWYgeW91IHJlY2VpdmUgYSBub24tMjAwIEFQSSByZXNwb25zZSwgY29tcGFyZSB0aGlzIGZvcm1hdHRpbmcgKGJveGVzLCBicmFjZXMsIHF1b3RlcywgZXRjLikgdG8gdGhlICdDb21wbGV0ZSBQYXlsb2FkJyBzY2hlbWEgcHJvdmlkZWQgaGVyZTpcbmh0dHBzOi8vYXBpLnJlcG9ydGVyLm5paC5nb3YvP3VybHMucHJpbWFyeU5hbWU9VjIuMCMvU2VhcmNoL3Bvc3RfdjJfcHJvamVjdHNfc2VhcmNoIFxuIn0= -->
+<pre><code>This is your JSON payload:
+{
+    &quot;criteria&quot;: {
+        &quot;advanced_text_search&quot;: {
+            &quot;operator&quot;: &quot;advanced&quot;,
+            &quot;search_field&quot;: &quot;terms,abstract,projecttitle&quot;,
+            &quot;search_text&quot;: &quot;(suicide) OR \&quot;self-directed violence\&quot;&quot;
+        },
+        &quot;activity_codes&quot;: [
+            &quot;F31&quot;
+        ],
+        &quot;fiscal_years&quot;: [
+            2012,
+            2013,
+            2014,
+            2015,
+            2016,
+            2017,
+            2018,
+            2019,
+            2020,
+            2021,
+            2022,
+            2023
+        ],
+        &quot;use_relevance&quot;: false,
+        &quot;include_active_projects&quot;: false,
+        &quot;exclude_subprojects&quot;: false,
+        &quot;multi_pi_only&quot;: false,
+        &quot;newly_added_projects_only&quot;: false,
+        &quot;sub_project_only&quot;: false
+    },
+    &quot;include_fields&quot;: [
+        &quot;ApplId&quot;,
+        &quot;FiscalYear&quot;,
+        &quot;ActivityCode&quot;,
+        &quot;AwardAmount&quot;,
+        &quot;IsActive&quot;,
+        &quot;ProgramOfficers&quot;,
+        &quot;ProjectStartDate&quot;,
+        &quot;Terms&quot;,
+        &quot;AbstractText&quot;,
+        &quot;ProjectTitle&quot;
+    ],
+    &quot;offset&quot;: 0,
+    &quot;limit&quot;: 500
+}
+
+If you receive a non-200 API response, compare this formatting (boxes, braces, quotes, etc.) to the &#39;Complete Payload&#39; schema provided here:
+https://api.reporter.nih.gov/?urls.primaryName=V2.0#/Search/post_v2_projects_search </code></pre>
 <!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ3JhbnRzIDwtIGdldF9uaWhfZGF0YShxdWVyeSA9IHJlcSwgbWF4X3BhZ2VzID0gMSwgZmxhdHRlbl9yZXN1bHQ9VFJVRSlcbmBgYCJ9 -->
+<pre class="r"><code>grants &lt;- get_nih_data(query = req, max_pages = 1, flatten_result=TRUE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmV0cmlldmluZyBmaXJzdCBwYWdlIG9mIHJlc3VsdHMgKHVwIHRvIDUwMCByZWNvcmRzKVxubWF4X3BhZ2VzIHNldCB0byAxIGJ5IHVzZXIsIGJ1dCByZXN1bHQgc2V0IG9ubHkgY29udGFpbnMgMSBwYWdlcy4gIFJldHJpZXZpbmcgdGhlIGZ1bGwgcmVzdWx0IHNldC4uLlxuIn0= -->
+<pre><code>Retrieving first page of results (up to 500 records)
+max_pages set to 1 by user, but result set only contains 1 pages.  Retrieving the full result set...</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuICAgICNyZW1vdmUgbWF4IHBhZ2VzIG9uY2UgcXVlcnkgZmluYWwgaWYgc2Vla2luZyBtb3JlIHRoYW4gNTAwIHJlY3NcblxudGFibGUoZ3JhbnRzJGFjdGl2aXR5X2NvZGUpIFxuYGBgIn0= -->
+<pre class="r"><code>    #remove max pages once query final if seeking more than 500 recs
+
+table(grants$activity_code) </code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5GMzEgXG4yMjUgXG4ifQ== -->
+<pre><code>
+F31 
+225 </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuICAjTj0yMjUgRjMxIGZ1bmRlZCBhcHBzIGluIGxhc3QgZGVjYWRlIHdpdGggc3VpY2lkZSBvciBzZWxmLWRpcmVjdGVkIHZpb2xlbmNlIGFzIGEgdGl0bGUsIG5hcnJhdGl2ZSwgb3Iga2V5IHdvcmQ7IDM0MCB0b3RhbCBpbiBkYXRhYmFzZVxuYGBgIn0= -->
+<pre class="r"><code>  #N=225 F31 funded apps in last decade with suicide or self-directed violence as a title, narrative, or key word; 340 total in database</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6NSwibmNvbCI6Miwic3VtbWFyeSI6eyJEZXNjcmlwdGlvbiI6WyJkZiBbNSDDlyAyXSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUE2MVJzVTdETUJCMTBnUm9DZ1dKSCtBSHlNTFNzUU5pWkVBZ2RUV08wMWdLZGprN1N0a1FncG1WVCtIckNuYnRxMUpQREF6UjNUdmZzMS9ldTd0ZVhCV0xnaEF5SWxtU2tGRnVXNUkvM045Y3pnakpVZ3NTa3BHeHEydTdkRzRiTnp4elcrRWc2MFhiaHY1QWQ0S0pLcUFqNEpwVFlFM0FvMDd6ME9iYWRKV3d6ZFNCK1dmajNpWHpqeTlmMzc5OWZadjUrdXB4SkNtWDlJbnJJQ2ZkeVZHQUFySWErSE5FR29QcXl5SHhYLzVqWHhkcnFjYnJjVmhVMU5DeUJ2dXlSWnVJY3FoV1JpaHBTYW56ZU9JSTIyUC8vYUhmOHBMZ2FESy9KUVBIMHA5SXpIRXZLdE9VckRPcXJyMmN2WHVIdXdsRWcxUEQxK1ppQllweHJZVmNSdHlUVVBOQm4wWTZKdWdVQjFDQUh2UVVwTHN2UUJ1UnBrdDBPdU9zVVppaEVkVkxhUzNUZU9nR21CMlhTeUYzQWJYMGtXT3NVNXY5TnZweUJVSWFUTVpPZFdtVW9iaFhNTlhpeEp1eitRV0d0aWl2S2dNQUFBPT0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["word"],"name":[1],"type":["chr"],"align":["left"]},{"label":["freq"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"will","2":"1005","_rn_":"will"},{"1":"suicid","2":"691","_rn_":"suicid"},{"1":"research","2":"663","_rn_":"research"},{"1":"use","2":"583","_rn_":"use"},{"1":"studi","2":"535","_rn_":"studi"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[5]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI1RleHQgbWluaW5nIHBhY2thZ2VzXG5wX2xvYWQodG0sIFNub3diYWxsQywgXCJ3b3JkY2xvdWRcIixcIlJDb2xvckJyZXdlclwiKVxuc2V0LnNlZWQoMTAwKVxuXG53b3JkY2xvdWQod29yZHMgPSBkYXQkd29yZCwgZnJlcSA9IGRhdCRmcmVxLCByYW5kb20ub3JkZXI9VFJVRSlcbmBgYCJ9 -->
+<pre class="r"><code>#Text mining packages
+p_load(tm, SnowballC, &quot;wordcloud&quot;,&quot;RColorBrewer&quot;)
+set.seed(100)
+
+wordcloud(words = dat$word, freq = dat$freq, random.order=TRUE)</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -1891,7 +1987,7 @@ data &lt;-
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUHJvamV0IFNJQ0NTIE1vbnRyZWFsIDIwMjMgZGUgU2hhbXNpIFNvbHRhbmkiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQprbml0cjo6b3B0c19jaHVuayRzZXQoCiAgd2FybmluZyA9IFRSVUUsICMgc2hvdyB3YXJuaW5ncwogIG1lc3NhZ2UgPSBUUlVFLCAjIHNob3cgbWVzc2FnZXMKICBlcnJvciA9IFRSVUUsICMgZG8gbm90IGludGVycnVwdCBnZW5lcmF0aW9uIGluIGNhc2Ugb2YgZXJyb3JzLAogIGVjaG8gPSBUUlVFICAjIHNob3cgUiBjb2RlCikKbGlicmFyeShwYWNtYW4pCnBfbG9hZChrbml0ciwgCiAgICAgICB0aWR5dmVyc2UsIHRpZHl0ZXh0LCAKICAgICAgIHRleHRkYXRhLCB0bSwgCiAgICAgICBtYXBzLCBTbm93YmFsbEMsIAogICAgICAgd29yZGNsb3VkLCB0b3BpY21vZGVscywgcmVwb1J0ZXIubmloKQoKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFLCB0aWR5Lm9wdHMgPSBsaXN0KHdpZHRoLmN1dG9mZiA9IDYwKSwgdGlkeSA9IFRSVUUpCmBgYAoKKlJ1biogPSAqQ21kK1NoaWZ0K0VudGVyKi4gKkluc2VydCBDaHVuayogPSAqQ21kK09wdGlvbitJKgoKYGBge3J9CiNleHBsb3JpbmcgcmVwb1J0ZXIubmloCgpkYXRhKCJuaWhfZmllbGRzIikgCmZpZWxkcyA8LSBuaWhfZmllbGRzICU+JQogIGZpbHRlcihyZXNwb25zZV9uYW1lICVpbiUgI3NwZWNpZnkgdGhlIGhlYWRlcnMgeW91IHdhbnQKICAgIGMoImFwcGxfaWQiLCAidGVybXMiLCAiYWN0aXZpdHlfY29kZSIsICJwcm9qZWN0X3RpdGxlIiwgImZpc2NhbF95ZWFyIiwgImF3YXJkX2Ftb3VudCIsICJpc19hY3RpdmUiLCAicHJvamVjdF9zdGFydF9kYXRlIiwgImFic3RyYWN0X3RleHQiLCJwcm9ncmFtX29mZmljZXJzIiwgImFjdGl2aXR5X3R5cGUiLCAjIm9yZ19uYW1lcyIsCiAgIm9yZ2FuaXphdGlvbl90eXBlIikpICU+JSBwdWxsKGluY2x1ZGVfbmFtZSkKCnJlcSA8LSBtYWtlX3JlcShjcml0ZXJpYSA9IGxpc3QoZmlzY2FsX3llYXJzID0gMjAyMSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbmNsdWRlX2FjdGl2ZV9wcm9qZWN0cyA9IFRSVUUsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb3JnX25hbWVzID0gYygiU3RhbmZvcmQiLCAiTmV3IEhhdmVuIikKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICApLAogICAgICAgICAgICAgICAgaW5jbHVkZV9maWVsZHMgPSBmaWVsZHMsIGxpbWl0ID0gNTAsIG1lc3NhZ2UgPSBGQUxTRSkKCmdyYW50cyA8LSBnZXRfbmloX2RhdGEocXVlcnkgPSByZXEsIG1heF9wYWdlcyA9IDEsIGZsYXR0ZW5fcmVzdWx0PVRSVUUpCmBgYAoKYGBge3J9CnBfbG9hZCh0aWR5dmVyc2UsbWFncml0dHIscnZlc3QpCiNzZXR3ZCgnL1VzZXJzL3Nzb2x0YW5pL0Rlc2t0b3AvUGhEIGNvdXJzZXdvcmsvQ291cnNfU0lDU1NfTW9udHJlYWwvZ3JhbnQgZnVuZGluZyBwcm9qZWN0JykKcmF3SFRNTCA8LSByZWFkX2h0bWwoIi4vMDAuRGF0YS9DSUhSX3N1aWNpZGVfcmVzZWFyY2guaHRtbCIpCgpwYWdlX3NlY3Rpb24gPC0gaHRtbF9ub2RlKHJhd0hUTUwsIGNzcyA9ICcjZnJtU2VhcmNoTG9jYXRpb24gPiB0YWJsZSA+IHRib2R5ID4gdHI6bnRoLWNoaWxkKDUpIHRkJykKCiNwYWdlX3NlY3Rpb24gPC0gaHRtbF9ub2RlKHJhd0hUTUwsIHhwYXRoID0gJy8vYnIrLy90YWJsZS8vdGQnKQoKZmlsZSA8LSBodG1sX3RleHQocGFnZV9zZWN0aW9uKQoKI29uZSBtZXRob2QgdG8gYnJlYWsgdXAgdGV4dCBpbnRvIGRpZmZlcmVudCBjZWxscwpyZXF1aXJlKGRhdGEudGFibGUpCm8gPSBmcmVhZChmaWxlLCBzZXAgPSAnXG4nLCBoZWFkZXIgPSBUKQoKICAjdGVzdCAKICAjbyA9IGMoJ3p5JywgJ3ggICAgeScsICcnKQoKI3RyaW0gd2hpdGVzcGFjZQpvJGBTZWFyY2ggUmVzdWx0c2AgPSBzdHJfdHJpbShvJGBTZWFyY2ggUmVzdWx0c2ApCgojZHJvcCBlbXB0eSByb3dzCmRyb3BfbGlzdCA9IG8kYFNlYXJjaCBSZXN1bHRzYD09IiIKbyA8LSBvWyFkcm9wX2xpc3QsIF0KCiNkcm9wIHJvd3Mgc2F5aW5nICJEZXRhaWxzLi4uIgpkcm9wX2xpc3QgPSBvJGBTZWFyY2ggUmVzdWx0c2A9PSAiRGV0YWlscy4uLiIKbyA8LSBvWyFkcm9wX2xpc3QsIF0KCiNzb21lIGdyYW50IGRhdGVzIGFyZSBpbiBhIDMtcm93IGZvcm1hdDsgbWVyZ2Ugd2hlbiB0aGlzIGlzIHRoZSBjYXNlCiAgI2UuZy4gMjEKICAgICAgICAjdG8KICAgICAgICAjMjIKICAjIGFuZCBub3Q6IDIwMjMtMjQKbyRtZXJnZV9saXN0ID0gbyRgU2VhcmNoIFJlc3VsdHNgPT0gInRvIgogICNzdW0obWVyZ2VfbGlzdCkgIzM4MQpgYGAKCmBgYHtyfQpsaWJyYXJ5KHRpZHl2ZXJzZSkKCiNmbGFnIGNvbnNlY3V0aXZlIHJvd3Mgd2hpY2ggbmVlZCBtZXJnaW5nCnAgPSBvICU+JSAKICBtdXRhdGUobWVyZ2Vfcm93cz0KICAgICAgICAgICBpZmVsc2UobWVyZ2VfbGlzdD09VCAsCiAgICAgICAgICAgICAgcGFzdGUocm93X251bWJlcigpLTEsIHJvd19udW1iZXIoKSsxLCBzZXAgPSAiOiIpLAogICAgICAgICAgICAgIE5BKSwKICAgICAgICBtZXJnZV9zdGFydCA9CiAgICAgICAgICAgaWZlbHNlKG1lcmdlX2xpc3Q9PVQsCiAgICAgICAgICAgICAgcGFzdGUocm93X251bWJlcigpLTEpCiAgICAgICAgICAgICAgLE5BKQogICAgICAgICApICU+JSAKICBmaWx0ZXIobWVyZ2VfbGlzdD09VCkKCiMjIyBub3Qgd29ya2luZwojI2FzLmRhdGEuZnJhbWUocCkKb1twW1s0XV0sXQoKcGFzdGUob1tbcCRtZXJnZV9yb3dzXV0KCiAgbXV0YXRlKGNvbmNhdGVkX2NvbHVtbiA9IG9bbWVyZ2Vfcm93cyxdKQoKcmJpbmQocCwgcm93MyA9IGFwcGx5KHAsIDIsIHBhc3RlMCwgY29sbGFwc2UgPSAiLSIpKQpgYGAKCmBgYHtyfQoKaW5wdXQgPC0gZGF0YV9mcmFtZSh0ZXh0ID0gZmlsZSkKaW5wdXQKCnBfbG9hZChkcGx5ciwgbHVicmlkYXRlKQpkZiA8LSBtYXRyaXgoaW5wdXQsIG5jb2wgPSA3LCBieXJvdyA9IFRSVUUpICU+JSAKICBhc190aWJibGUoKSAlPiUgCiAgbXV0YXRlKFYxID0gbWR5KFYxKSwgVjIgPSBhcy5udW1lcmljKFYyKSkKCgoKZGF0YSR0ZXh0CmRhdGEgPC0KICBkYXRhICU+JSAKICBzZXBhcmF0ZSh0ZXh0LCBpbnRvID0gYygidGV4dDEiLCAidGV4dDIiLCAidGV4dDMiLCAidGV4dDQiLCAidGV4dDUiLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAidGV4dDYiLCAidGV4dDciLCAidGV4dDgiLCAidGV4dDkiLCAidGV4dDEwIiksIHNlcCA9ICJCYWNrIHRvIHRleHQiKQpgYGAK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUHJvamV0IFNJQ0NTIE1vbnRyZWFsIDIwMjMgZGUgU2hhbXNpIFNvbHRhbmkiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQprbml0cjo6b3B0c19jaHVuayRzZXQoCiAgd2FybmluZyA9IFRSVUUsICMgc2hvdyB3YXJuaW5ncwogIG1lc3NhZ2UgPSBUUlVFLCAjIHNob3cgbWVzc2FnZXMKICBlcnJvciA9IFRSVUUsICMgZG8gbm90IGludGVycnVwdCBnZW5lcmF0aW9uIGluIGNhc2Ugb2YgZXJyb3JzLAogIGVjaG8gPSBUUlVFICAjIHNob3cgUiBjb2RlCikKbGlicmFyeShwYWNtYW4pCnBfbG9hZChrbml0ciwgCiAgICAgICB0aWR5dmVyc2UsIHRpZHl0ZXh0LCAKICAgICAgIHRleHRkYXRhLCB0bSwgCiAgICAgICBtYXBzLCBTbm93YmFsbEMsIAogICAgICAgd29yZGNsb3VkLCB0b3BpY21vZGVscywgcmVwb1J0ZXIubmloKQoKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFLCB0aWR5Lm9wdHMgPSBsaXN0KHdpZHRoLmN1dG9mZiA9IDYwKSwgdGlkeSA9IFRSVUUpCmBgYAoKKlJ1biogPSAqQ21kK1NoaWZ0K0VudGVyKi4gKkluc2VydCBDaHVuayogPSAqQ21kK09wdGlvbitJKgoKYGBge3J9CiNleHBsb3JpbmcgcmVwb1J0ZXIubmloCgojZGVmaW5lIGZpZWxkcyB5b3Ugd2FudCAKZGF0YSgibmloX2ZpZWxkcyIpIAoKZmllbGRzIDwtIG5paF9maWVsZHMgJT4lCiAgZmlsdGVyKHJlc3BvbnNlX25hbWUgJWluJSAKICAgIGMoImFwcGxfaWQiLCAidGVybXMiLCAiYWN0aXZpdHlfY29kZSIsICJwcm9qZWN0X3RpdGxlIiwgImZpc2NhbF95ZWFyIiwgImF3YXJkX2Ftb3VudCIsICJpc19hY3RpdmUiLCAicHJvamVjdF9zdGFydF9kYXRlIiwgImFic3RyYWN0X3RleHQiLCJwcm9ncmFtX29mZmljZXJzIiwgImFjdGl2aXR5X3R5cGUiICMsICJvcmdhbml6YXRpb24iLCAib3JnYW5pemF0aW9uX3R5cGUiCiAgICAgICkpICU+JSBwdWxsKGluY2x1ZGVfbmFtZSkKCgojIHJlcSA8LSBtYWtlX3JlcShjcml0ZXJpYSA9IGxpc3QoZmlzY2FsX3llYXJzID0gMjAxMzoyMDIzICNtb3JlIHJlY2VudCBhY3RpdmUgYXdhcmRzIHdpbGwgYmUgaW5jbHVkZWQKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMsIGluY2x1ZGVfYWN0aXZlX3Byb2plY3RzID0gVFJVRSwKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICksCiMgICAgICAgICAgICAgICAgIGluY2x1ZGVfZmllbGRzID0gZmllbGRzLCBsaW1pdCA9IDUwLCBtZXNzYWdlID0gRkFMU0UpCiMgZ3JhbnRzICU+JSBnbGltcHNlKHdpZHRoID0gZ2V0T3B0aW9uKCJjbGkud2lkdGgiKSkKCgpyZXEgPC0gbWFrZV9yZXEoY3JpdGVyaWEgPSBsaXN0KGFkdmFuY2VkX3RleHRfc2VhcmNoIAogICAgICAgICAgICAgICAgICAgID0gbGlzdChvcGVyYXRvciA9ICJhZHZhbmNlZCIsCiAgICAgICAgICAgICAgICAgICAgc2VhcmNoX2ZpZWxkID0gYygidGVybXMiLCAiYWJzdHJhY3QiLCAicHJvamVjdHRpdGxlIiksCiAgICAgICAgICAgICAgICAgICAgc2VhcmNoX3RleHQgPSAiKHN1aWNpZGUpIE9SIFwic2VsZi1kaXJlY3RlZCB2aW9sZW5jZVwiIiksCiAgICAgICAgICAgICBhY3Rpdml0eV9jb2RlcyA9ICdGMzEnLAogICAgICAgICAgICAgZmlzY2FsX3llYXJzID0gMjAxMjoyMDIzCiAgICAgICAgICAgICApLAogICAgICBpbmNsdWRlX2ZpZWxkcyA9IGZpZWxkcyApCgpncmFudHMgPC0gZ2V0X25paF9kYXRhKHF1ZXJ5ID0gcmVxLCBtYXhfcGFnZXMgPSAxLCBmbGF0dGVuX3Jlc3VsdD1UUlVFKQogICAgI3JlbW92ZSBtYXggcGFnZXMgb25jZSBxdWVyeSBmaW5hbCBpZiBzZWVraW5nIG1vcmUgdGhhbiA1MDAgcmVjcwoKdGFibGUoZ3JhbnRzJGFjdGl2aXR5X2NvZGUpIAogICNOPTIyNSBGMzEgZnVuZGVkIGFwcHMgaW4gbGFzdCBkZWNhZGUgd2l0aCBzdWljaWRlIG9yIHNlbGYtZGlyZWN0ZWQgdmlvbGVuY2UgYXMgYSB0aXRsZSwgbmFycmF0aXZlLCBvciBrZXkgd29yZDsgMzQwIHRvdGFsIGluIGRhdGFiYXNlCmBgYApgYGB7ciB0ZXh0IHByb2Nlc3Npbmd9CiMgQ3JlYXRlIGNvcnB1cwpjb3JwdXMgPSBDb3JwdXMoVmVjdG9yU291cmNlKGdyYW50cyRhYnN0cmFjdF90ZXh0KSkKCiNDb252ZXJzaW9uIHRvIExvd2VyY2FzZQoKY29ycHVzID0gdG1fbWFwKGNvcnB1cywgUGxhaW5UZXh0RG9jdW1lbnQpCmNvcnB1cyA9IHRtX21hcChjb3JwdXMsIHRvbG93ZXIpCgojUmVtb3ZpbmcgUHVuY3R1YXRpb24KY29ycHVzID0gdG1fbWFwKGNvcnB1cywgcmVtb3ZlUHVuY3R1YXRpb24pCgojUmVtb3ZlIHN0b3B3b3Jkcwpjb3JwdXMgPSB0bV9tYXAoY29ycHVzLCByZW1vdmVXb3JkcywgYygicHJvamVjdCIsICJzdW1tYXJ5Iiwgc3RvcHdvcmRzKCJlbmdsaXNoIikpKQoKIyBTdGVtbWluZwpjb3JwdXMgPSB0bV9tYXAoY29ycHVzLCBzdGVtRG9jdW1lbnQpCgojIEVsaW1pbmF0ZSB3aGl0ZSBzcGFjZXMKY29ycHVzID0gdG1fbWFwKGNvcnB1cywgc3RyaXBXaGl0ZXNwYWNlKQoKIyBMb29rIGF0IGZpcnN0IGluc3RhbmNlIG9mIGNvcnB1cwpjb3JwdXNbWzFdXVsxXQoKI0RvY3VtZW50IHRlcm0gbWF0cml4CkRUTSA8LSBUZXJtRG9jdW1lbnRNYXRyaXgoY29ycHVzKQptYXQgPC0gYXMubWF0cml4KERUTSkKZiA8LSBzb3J0KHJvd1N1bXMobWF0KSxkZWNyZWFzaW5nPVRSVUUpCmRhdCA8LSBkYXRhLmZyYW1lKHdvcmQgPSBuYW1lcyhmKSxmcmVxPWYpCgpoZWFkKGRhdCwgNSkKYGBgCmBgYHtyIHdvcmRjbG91ZH0KI1RleHQgbWluaW5nIHBhY2thZ2VzCnBfbG9hZCh0bSwgU25vd2JhbGxDLCAid29yZGNsb3VkIiwiUkNvbG9yQnJld2VyIikKc2V0LnNlZWQoMTAwKQoKd29yZGNsb3VkKHdvcmRzID0gZGF0JHdvcmQsIGZyZXEgPSBkYXQkZnJlcSwgcmFuZG9tLm9yZGVyPVRSVUUpCmBgYAoKYGBge3J9CnBfbG9hZCh0aWR5dmVyc2UsbWFncml0dHIscnZlc3QpCiNzZXR3ZCgnL1VzZXJzL3Nzb2x0YW5pL0Rlc2t0b3AvUGhEIGNvdXJzZXdvcmsvQ291cnNfU0lDU1NfTW9udHJlYWwvZ3JhbnQgZnVuZGluZyBwcm9qZWN0JykKcmF3SFRNTCA8LSByZWFkX2h0bWwoIi4vMDAuRGF0YS9DSUhSX3N1aWNpZGVfcmVzZWFyY2guaHRtbCIpCgpwYWdlX3NlY3Rpb24gPC0gaHRtbF9ub2RlKHJhd0hUTUwsIGNzcyA9ICcjZnJtU2VhcmNoTG9jYXRpb24gPiB0YWJsZSA+IHRib2R5ID4gdHI6bnRoLWNoaWxkKDUpIHRkJykKCiNwYWdlX3NlY3Rpb24gPC0gaHRtbF9ub2RlKHJhd0hUTUwsIHhwYXRoID0gJy8vYnIrLy90YWJsZS8vdGQnKQoKZmlsZSA8LSBodG1sX3RleHQocGFnZV9zZWN0aW9uKQoKI29uZSBtZXRob2QgdG8gYnJlYWsgdXAgdGV4dCBpbnRvIGRpZmZlcmVudCBjZWxscwpyZXF1aXJlKGRhdGEudGFibGUpCm8gPSBmcmVhZChmaWxlLCBzZXAgPSAnXG4nLCBoZWFkZXIgPSBUKQoKICAjdGVzdCAKICAjbyA9IGMoJ3p5JywgJ3ggICAgeScsICcnKQoKI3RyaW0gd2hpdGVzcGFjZQpvJGBTZWFyY2ggUmVzdWx0c2AgPSBzdHJfdHJpbShvJGBTZWFyY2ggUmVzdWx0c2ApCgojZHJvcCBlbXB0eSByb3dzCmRyb3BfbGlzdCA9IG8kYFNlYXJjaCBSZXN1bHRzYD09IiIKbyA8LSBvWyFkcm9wX2xpc3QsIF0KCiNkcm9wIHJvd3Mgc2F5aW5nICJEZXRhaWxzLi4uIgpkcm9wX2xpc3QgPSBvJGBTZWFyY2ggUmVzdWx0c2A9PSAiRGV0YWlscy4uLiIKbyA8LSBvWyFkcm9wX2xpc3QsIF0KCiNzb21lIGdyYW50IGRhdGVzIGFyZSBpbiBhIDMtcm93IGZvcm1hdDsgbWVyZ2Ugd2hlbiB0aGlzIGlzIHRoZSBjYXNlCiAgI2UuZy4gMjEKICAgICAgICAjdG8KICAgICAgICAjMjIKICAjIGFuZCBub3Q6IDIwMjMtMjQKbyRtZXJnZV9saXN0ID0gbyRgU2VhcmNoIFJlc3VsdHNgPT0gInRvIgogICNzdW0obWVyZ2VfbGlzdCkgIzM4MQpgYGAKCmBgYHtyfQpsaWJyYXJ5KHRpZHl2ZXJzZSkKCiNmbGFnIGNvbnNlY3V0aXZlIHJvd3Mgd2hpY2ggbmVlZCBtZXJnaW5nCnAgPSBvICU+JSAKICBtdXRhdGUobWVyZ2Vfcm93cz0KICAgICAgICAgICBpZmVsc2UobWVyZ2VfbGlzdD09VCAsCiAgICAgICAgICAgICAgcGFzdGUocm93X251bWJlcigpLTEsIHJvd19udW1iZXIoKSsxLCBzZXAgPSAiOiIpLAogICAgICAgICAgICAgIE5BKSwKICAgICAgICBtZXJnZV9zdGFydCA9CiAgICAgICAgICAgaWZlbHNlKG1lcmdlX2xpc3Q9PVQsCiAgICAgICAgICAgICAgcGFzdGUocm93X251bWJlcigpLTEpCiAgICAgICAgICAgICAgLE5BKQogICAgICAgICApICU+JSAKICBmaWx0ZXIobWVyZ2VfbGlzdD09VCkKCiMjIyBub3Qgd29ya2luZwojI2FzLmRhdGEuZnJhbWUocCkKb1twW1s0XV0sXQoKcGFzdGUob1tbcCRtZXJnZV9yb3dzXV0KCiAgbXV0YXRlKGNvbmNhdGVkX2NvbHVtbiA9IG9bbWVyZ2Vfcm93cyxdKQoKcmJpbmQocCwgcm93MyA9IGFwcGx5KHAsIDIsIHBhc3RlMCwgY29sbGFwc2UgPSAiLSIpKQpgYGAKCmBgYHtyfQoKaW5wdXQgPC0gZGF0YV9mcmFtZSh0ZXh0ID0gZmlsZSkKaW5wdXQKCnBfbG9hZChkcGx5ciwgbHVicmlkYXRlKQpkZiA8LSBtYXRyaXgoaW5wdXQsIG5jb2wgPSA3LCBieXJvdyA9IFRSVUUpICU+JSAKICBhc190aWJibGUoKSAlPiUgCiAgbXV0YXRlKFYxID0gbWR5KFYxKSwgVjIgPSBhcy5udW1lcmljKFYyKSkKCgoKZGF0YSR0ZXh0CmRhdGEgPC0KICBkYXRhICU+JSAKICBzZXBhcmF0ZSh0ZXh0LCBpbnRvID0gYygidGV4dDEiLCAidGV4dDIiLCAidGV4dDMiLCAidGV4dDQiLCAidGV4dDUiLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAidGV4dDYiLCAidGV4dDciLCAidGV4dDgiLCAidGV4dDkiLCAidGV4dDEwIiksIHNlcCA9ICJCYWNrIHRvIHRleHQiKQpgYGAK</div>
 
 
 
