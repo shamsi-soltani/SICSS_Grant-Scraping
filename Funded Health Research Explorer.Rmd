@@ -2,6 +2,7 @@
 title: "Projet SICCS Montreal 2023 de Shamsi Soltani"
 output: html_notebook
 ---
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   warning = TRUE, # show warnings
@@ -19,8 +20,7 @@ p_load(knitr,
 knitr::opts_chunk$set(echo = TRUE, tidy.opts = list(width.cutoff = 60), tidy = TRUE)
 ```
 
-*Run* = *Cmd+Shift+Enter*. 
-*Insert Chunk* = *Cmd+Option+I*
+*Run* = *Cmd+Shift+Enter*. *Insert Chunk* = *Cmd+Option+I*
 
 ```{r}
 #exploring repoRter.nih
@@ -28,17 +28,16 @@ knitr::opts_chunk$set(echo = TRUE, tidy.opts = list(width.cutoff = 60), tidy = T
 data("nih_fields") 
 fields <- nih_fields %>%
   filter(response_name %in% #specify the headers you want
-    c("appl_id", "subproject_id", "activity_code", "project_title", "fiscal_year",
-  "award_amount", "is_active", "project_start_date", "abstract_text", "org_names", "organization_dept_type")) %>% pull(include_name)
+    c("appl_id", "terms", "activity_code", "project_title", "fiscal_year", "award_amount", "is_active", "project_start_date", "abstract_text","program_officers", "activity_type", #"org_names",
+  "organization_type")) %>% pull(include_name)
 
-req <- make_req(criteria = list(fiscal_years = 2018:2021,
+req <- make_req(criteria = list(fiscal_years = 2021,
                                 include_active_projects = TRUE,
                                 org_names = c("Stanford", "New Haven")
                                 ),
                 include_fields = fields, limit = 50, message = FALSE)
 
-res <- get_nih_data(query = req,
-max_pages = 1, flatten_result=TRUE)
+grants <- get_nih_data(query = req, max_pages = 1, flatten_result=TRUE)
 ```
 
 ```{r}
@@ -106,8 +105,6 @@ paste(o[[p$merge_rows]]
 rbind(p, row3 = apply(p, 2, paste0, collapse = "-"))
 ```
 
-
-
 ```{r}
 
 input <- data_frame(text = file)
@@ -126,7 +123,3 @@ data <-
   separate(text, into = c("text1", "text2", "text3", "text4", "text5", 
                           "text6", "text7", "text8", "text9", "text10"), sep = "Back to text")
 ```
-
-
-
-
