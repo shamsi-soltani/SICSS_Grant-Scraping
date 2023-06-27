@@ -89,11 +89,15 @@ dat <- data.frame(word = names(f),freq=f)
 head(dat, 5)
 ```
 ```{r wordcloud}
-#Text mining packages
-p_load(tm, SnowballC, "wordcloud","RColorBrewer")
 set.seed(100)
+display.brewer.all(colorblindFriendly = TRUE)      # Show all color palettes
 
-wordcloud(words = dat$word, freq = dat$freq, random.order=TRUE)
+wordcloud(words = dat$word, freq = dat$freq, min.freq = 10,           max.words=500, random.order=F, scale=c(3,.25), rot.per=0.3
+           , colors=brewer.pal(8, "Dark2"))
+
+p_load(wordcloud2)
+wordcloud2(dat,size = .8, minRotation = -pi/6, maxRotation = -pi/6, rotateRatio = 1)
+letterCloud( dat, word = "F31", color='random-light' , backgroundColor="black")
 ```
 
 ```{r}
