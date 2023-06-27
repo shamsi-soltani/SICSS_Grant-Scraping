@@ -23,19 +23,32 @@ knitr::opts_chunk$set(echo = TRUE, tidy.opts = list(width.cutoff = 60), tidy = T
 *Insert Chunk* = *Cmd+Option+I*
 
 ```{r}
+#exploring repoRter.nih
 
-"repoRter.nih"
+data("nih_fields") 
+fields <- nih_fields %>%
+  filter(response_name %in% #specify the headers you want
+    c("appl_id", "subproject_id", "activity_code", "project_title", "fiscal_year",
+  "award_amount", "is_active", "project_start_date", "abstract_text", "org_names", "organization_dept_type")) %>% pull(include_name)
 
+req <- make_req(criteria = list(fiscal_years = 2018:2021,
+                                include_active_projects = TRUE,
+                                org_names = c("Stanford", "New Haven")
+                                ),
+                include_fields = fields, limit = 50, message = FALSE)
+
+res <- get_nih_data(query = req,
+max_pages = 1, flatten_result=TRUE)
 ```
 
 ```{r}
 p_load(tidyverse,magrittr,rvest)
-setwd('/Users/ssoltani/Desktop/PhD coursework/Cours_SICSS_Montreal/grant funding project')
-rawHTML <- read_html("CIHR_suicide_research.html")
+#setwd('/Users/ssoltani/Desktop/PhD coursework/Cours_SICSS_Montreal/grant funding project')
+rawHTML <- read_html("./00.Data/CIHR_suicide_research.html")
 
-#page_section <- html_node(rawHTML, css = '#frmSearchLocation > table > tbody > tr:nth-child(5) td')
+page_section <- html_node(rawHTML, css = '#frmSearchLocation > table > tbody > tr:nth-child(5) td')
 
-page_section <- html_node(rawHTML, xpath = '//br+//table//td')
+#page_section <- html_node(rawHTML, xpath = '//br+//table//td')
 
 file <- html_text(page_section)
 
