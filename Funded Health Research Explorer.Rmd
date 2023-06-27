@@ -97,7 +97,6 @@ wordcloud(words = dat$word, freq = dat$freq, min.freq = 10,           max.words=
 
 p_load(wordcloud2)
 wordcloud2(dat,size = .8, minRotation = -pi/6, maxRotation = -pi/6, rotateRatio = 1)
-letterCloud( dat, word = "F31", color='random-light' , backgroundColor="black")
 ```
 
 ```{r}
