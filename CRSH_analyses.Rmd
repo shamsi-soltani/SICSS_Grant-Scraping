@@ -1,5 +1,5 @@
 ---
-title: "CRSH_analyse"
+title: "CRSH_analyses"
 author: "Julie, Firdaous et Rachel"
 date: "2023-06-28"
 output: pdf_document
