@@ -11,7 +11,7 @@ library(tidyverse)
 CRSH_1998_2010 <- read_excel("00.Data/CRSH_1998-2010.xls")
 CRSH_2011_2021 <- read_excel("00.Data/CRSH_2011-2021.xls")
 ```
-Fusionner les ranger et renommer les colonnes
+Fusionner les rangées et renommer les colonnes
 ```{r}
 colnames(CRSH_1998_2010)  <- CRSH_1998_2010[2, ]
 colnames(CRSH_2011_2021)  <- CRSH_2011_2021[2, ]
