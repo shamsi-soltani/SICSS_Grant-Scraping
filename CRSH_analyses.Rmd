@@ -20,15 +20,6 @@ CRSH2 <- CRSH_2011_2021[-c(1,2), ]
 CRSH_tot <- bind_rows(CRSH1, CRSH2)
 colnames(CRSH_tot) <- c("Candidat", "Organisme", "Titre", "Montant", "Année", "Code")
 ```
-Création de la variable Langage
-```{r}
-#install.packages("cld2")
-#install.packages("cld3")
-library(cld2)
-library(cld3)
-CRSH_tot$Langue2 <- cld2::detect_language(CRSH_tot$`Titre du projet`)
-CRSH_tot$Langue3 <- cld3::detect_language(CRSH_tot$`Titre du projet`)
-```
 Supprimer les demandes sans titre de projet
 ```{r}
 CRSH_st <- CRSH_tot |> 
@@ -39,6 +30,13 @@ CRSH_st <- CRSH_tot |>
 ```
 Création de la variable Langue
 ```{r}
+#install.packages("cld2")
+#install.packages("cld3")
+library(cld2)
+library(cld3)
+CRSH_st$Langue2 <- cld2::detect_language(CRSH_st$Titre)
+CRSH_st$Langue3 <- cld3::detect_language(CRSH_st$Titre)
+
 CRSH_lang <- CRSH_st |> 
   mutate(
     Langue = case_when(
@@ -50,6 +48,11 @@ CRSH_lang <- CRSH_st |>
       is.na(Langue2) & Langue3 == "en" ~ "angl"
     ))
 ```
+Jeu de données final
+```{r}
+CRSH_final <- CRSH_lang[ , -c(7,8)]
+```
+
 
 
 
