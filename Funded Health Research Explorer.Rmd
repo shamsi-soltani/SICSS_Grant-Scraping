@@ -22,9 +22,9 @@ knitr::opts_chunk$set(echo = TRUE, tidy.opts = list(width.cutoff = 60), tidy = T
 
 *Run* = *Cmd+Shift+Enter*. *Insert Chunk* = *Cmd+Option+I*
 
-#Use Reporter NIH package
+#1.0 Use Reporter NIH package
 
-##Testing package with small dataset
+##1.1 Testing package with small dataset
 
 ```{r}
 #exploring repoRter.nih
@@ -61,7 +61,7 @@ table(grants$activity_code)
   #N=225 F31 funded apps in last decade with suicide or self-directed violence as a title, narrative, or key word; 340 total in database
 ```
 
-##looking at small dataset using text analysis
+##1.2 looking at small dataset using text analysis
 
 ```{r text processing}
 # Create corpus
@@ -96,7 +96,7 @@ dat <- data.frame(word = names(f),freq=f)
 head(dat, 5)
 ```
 
-##wordcloud
+##1.3 wordcloud
 
 ```{r wordcloud}
 set.seed(100)
@@ -109,10 +109,11 @@ p_load(wordcloud2)
 wordcloud2(dat,size = .8, minRotation = -pi/6, maxRotation = -pi/6, rotateRatio = 1)
 ```
 
-##élargir la recherche à tous les fonds des NIH, parallèlement au code du CIHR (Voir "CIHR Data Import" de Leonard au GitHub)
+##1.4 élargir la recherche à tous les fonds des NIH, parallèlement au code du CIHR (Voir "CIHR Data Import" de Leonard au GitHub)
 
 CIHR fields include abstract = Abstract.Résumé, key = Key.Clé, name = Name.Nom, organization = OrgNm, province = ProvinceEN, country = CountryEN, year_comp = CompetitionYear.AnnéeDuConcours, year_fisc = FiscalYear.AnnéeFinancière, programID = ProgramIDProgramme, program_name = ProgramNameEN, funding_type = FundingTypeEN, science_areas = AreasOfScienceEN, research_class = ResearchClassEN, title = TitreApplicationTitle, keywords = Keywords.MotsClés
 
+###1.4.1 define columns
 ```{r}
 
 #define fields you want 
@@ -129,7 +130,7 @@ abstract = "abstract_text", key = "project_serial_num" name = "contact_pi_name",
 quels sont les mots qui indiquent les sciences sociales? J'ai: sociaux, sociales, qualitatives, qualitatif, qualitative, qualitatifs, sociale, social
 
 en anglais: social, qualitative
-
+#1.4.2 limit award types
 ```{r NIH grants types}
 #activity codes ---> F, K grants for students, early career faculty (excludes institutional grants)
 awards = c('F05', 'F30', 'F31', 'F32', 'F33', 
@@ -147,6 +148,7 @@ awards = c('F05', 'F30', 'F31', 'F32', 'F33',
 'K76', 'K99', 'KD1', 'KL1', 'KL2', 'KM1' )
 ```
 
+#1.4.3 create json for NIH API
 ```{r json}
 #create json for NIH API
 req <- make_req(criteria = list(advanced_text_search 
@@ -157,7 +159,9 @@ req <- make_req(criteria = list(advanced_text_search
   activity_codes = awards
                               ), 
       include_fields = fields )
-
+```
+#1.4.4 retreive data
+```{r}
 grants <- get_nih_data(query = req, max_pages = 1, flatten_result=TRUE)
 
 
