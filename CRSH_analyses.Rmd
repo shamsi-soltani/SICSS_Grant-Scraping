@@ -4,27 +4,40 @@ author: "Julie, Firdaous et Rachel"
 date: "2023-06-28"
 output: pdf_document
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+Chargement des données
+```{r}
+library(readxl)
+library(tidyverse)
+CRSH_1998_2010 <- read_excel("00.Data/CRSH_1998-2010.xls")
+CRSH_2011_2021 <- read_excel("00.Data/CRSH_2011-2021.xls")
+```
+Fusionner les ranger et renommer les colonnes
+```{r}
+colnames(CRSH_1998_2010)  <- CRSH_1998_2010[2, ]
+colnames(CRSH_2011_2021)  <- CRSH_2011_2021[2, ]
+CRSH1 <- CRSH_1998_2010[-c(1,2), ]
+CRSH2 <- CRSH_2011_2021[-c(1,2), ]
+CRSH_tot <- bind_rows(CRSH1, CRSH2)
+colnames(CRSH_tot) <- c("Candidat", "Organisme", "Titre", "Montant", "Année", "Code")
+```
+Création de la variable Langage
+```{r}
+#install.packages("cld2")
+#install.packages("cld3")
+library(cld2)
+library(cld3)
+CRSH_tot$Langue2 <- cld2::detect_language(CRSH_tot$`Titre du projet`)
+CRSH_tot$Langue3 <- cld3::detect_language(CRSH_tot$`Titre du projet`)
+```
+Supprimer les demandes sans titre de projet
+```{r}
+CRSH_st <- CRSH_tot |> 
+  filter(!Titre == "No Title - Aucun titre") |> 
+  filter(!Titre == "No Title - Aucun Titre") |> 
+  filter(!Titre == "No title - Aucun titre") |> 
+  filter(!Titre == "No title")
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
