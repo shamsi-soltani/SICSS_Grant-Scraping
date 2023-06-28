@@ -147,14 +147,25 @@ fields <- nih_fields %>%
   research_class = ResearchClassEN,
   title = "project_title",
   keywords = "terms"
+  
+quels sont les mots qui indiquent les sciences sociales? J’ai: sociaux, sociales, qualitatives, qualitatif, qualitative, qualitatifs, sociale, social
+
+en anglais: social, qualitative
 ```{r json}
 #create json for NIH API
-req <- make_req(criteria = list(
-  fiscal_years = 2001:2023), 
+req <- make_req(criteria = list(advanced_text_search 
+                    = list(operator = "advanced",
+                    search_field = c("terms", "abstract", "projecttitle"),
+                    search_text = "(social) OR (qualitative)"),
+  fiscal_years = 2001:2023,
+  activity_codes = c('F','R','K')
+), 
       include_fields = fields )
 
 grants <- get_nih_data(query = req, max_pages = 1, flatten_result=TRUE)
     #remove max pages once query final if seeking more than 500 recs; 
+
+#grants <- get_nih_data(query = req, flatten_result=TRUE)
 
 #Note: API request fails after 15,000 records
 
