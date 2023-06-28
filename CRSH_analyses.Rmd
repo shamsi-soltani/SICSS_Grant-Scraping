@@ -37,6 +37,19 @@ CRSH_st <- CRSH_tot |>
   filter(!Titre == "No title - Aucun titre") |> 
   filter(!Titre == "No title")
 ```
+Création de la variable Langue
+```{r}
+CRSH_lang <- CRSH_st |> 
+  mutate(
+    Langue = case_when(
+      Langue2 == "en" & Langue3 == "fr" ~ "bi",
+      Langue2 == "fr" & Langue3 == "en" ~ "bi",
+      Langue2 == "en" ~ "angl",
+      Langue2 == "fr" ~ "fran",
+      is.na(Langue2) & Langue3 == "fr" ~ "fran",
+      is.na(Langue2) & Langue3 == "en" ~ "angl"
+    ))
+```
 
 
 
