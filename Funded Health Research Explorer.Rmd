@@ -35,31 +35,34 @@ data("nih_fields")
 
 fields <- nih_fields %>%
   filter(response_name %in% 
-    c("appl_id", "terms", "activity_code", "project_title", "fiscal_year", "award_amount", "is_active", "project_start_date", "abstract_text","program_officers", "activity_type" #, "organization", "organization_type"
+    c("appl_id", "terms", "activity_code", "project_title", "fiscal_year", "award_amount", "is_active", "project_start_date", "abstract_text","program_officers", "activity_type", "contact_pi_name", "full_foa" , "organization", "organization_type"
       )) %>% pull(include_name)
-
-
-# req <- make_req(criteria = list(fiscal_years = 2013:2023 #more recent active awards will be included
-#                                 #, include_active_projects = TRUE,
-#                                 ),
-#                 include_fields = fields, limit = 50, message = FALSE)
-# grants %>% glimpse(width = getOption("cli.width"))
 
 
 req <- make_req(criteria = list(advanced_text_search 
                     = list(operator = "advanced",
-                    search_field = c("terms", "abstract", "projecttitle"),
+                    search_field = c("terms"
+                                  #   , "abstract", "projecttitle"
+                                  ),
                     search_text = "(suicide) OR \"self-directed violence\""),
-             activity_codes = 'F31',
-             fiscal_years = 2012:2023
+            # activity_codes = 'F31',
+             fiscal_years = 2000:2023
              ),
       include_fields = fields )
 
-grants <- get_nih_data(query = req, max_pages = 1, flatten_result=TRUE)
+grants <- get_nih_data(query = req, #max_pages = 1,
+                       flatten_result=TRUE)
     #remove max pages once query final if seeking more than 500 recs
+```
+```{r}
 
 table(grants$activity_code) 
   #N=225 F31 funded apps in last decade with suicide or self-directed violence as a title, narrative, or key word; 340 total in database
+
+#filter out grant types we don't want
+  #note: awards is defined elsewhere
+grants_filt = grants %>% 
+  filter(activity_code %in% awards)
 ```
 
 ##1.2 looking at small dataset using text analysis
