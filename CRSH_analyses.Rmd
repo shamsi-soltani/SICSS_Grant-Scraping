@@ -69,7 +69,7 @@ CRSH4 <- CRSH3 |>
                           str_detect(Concours, "graduate") == TRUE | 
                           str_detect(Concours, "postdoctoral") == TRUE, "etudiant", "professeur"))
 ```
-
+write_csv(CRSH4, "CRSH_final.csv")
 
 ```{r}
 ```
