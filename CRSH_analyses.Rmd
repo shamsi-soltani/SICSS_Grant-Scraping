@@ -51,8 +51,32 @@ CRSH_lang <- CRSH_st |>
 Jeu de données final
 ```{r}
 CRSH_final <- CRSH_lang[ , -c(7,8)]
+
+```
+# intégration de la colonne Concours dans la bd final
+```{r}
+CRSH_codes <- read_csv("CRSH_codes.csv")
+CRSH_codes$Code <- as.character(CRSH_codes$Code)
+CRSH3 <- left_join(CRSH_final, CRSH_codes, by = "Code")
+```
+# Création de la colonne Statut
+```{r}
+CRSH4 <- CRSH3 |> 
+  mutate(Concours = str_to_lower(Concours),
+         statut = if_else(str_detect(Concours, "student") == TRUE | 
+                          str_detect(Concours, "master") == TRUE | 
+                          str_detect(Concours, "doctoral") == TRUE | 
+                          str_detect(Concours, "graduate") == TRUE | 
+                          str_detect(Concours, "postdoctoral") == TRUE, "etudiant", "professeur"))
 ```
 
+
+```{r}
+```
+
+
+```{r}
+```
 
 
 
