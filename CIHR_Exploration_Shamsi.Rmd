@@ -1,0 +1,265 @@
+---
+title: "CIHR Data Import, Cleaning, Exploration + Data Viz"
+output: html_notebook
+author: "Leonard, Shamsi"
+---
+
+################################################################################ 
+
+Data: CIHR Grants and Awards 2001 - 2020 Source: <https://open.canada.ca/data/en/dataset/49edb1d7-5cb4-4fa7-897c-515d1aad5da3> \################################################################################
+
+                              CIHR GRANTS Data
+
+##################################################################################### 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = TRUE, # show warnings
+  message = TRUE, # show messages
+  error = TRUE, # do not interrupt generation in case of errors,
+  echo = TRUE  # show R code
+)
+library(pacman)
+p_load(knitr, 
+       tidyverse, tidytext, 
+       textdata, tm, 
+       maps, SnowballC, 
+       wordcloud, topicmodels, repoRter.nih, haven)
+
+knitr::opts_knit$set(root.dir = '/Users/ssoltani/Desktop/PhD coursework/Cours_SICSS_Montreal/SICSS_Grant-Scraping/00.Data/CIHR')
+knitr::opts_chunk$set(echo = TRUE, tidy.opts = list(width.cutoff = 60), tidy = TRUE)
+```
+
+```{r}
+getwd()
+# store all csv file names
+csv_grants <- list.files(getwd(), pattern = "*.csv")
+
+# load csv files and merge them into one dataframe
+cihr_data <- data.frame() 
+
+for (file in csv_grants) {
+  file_path <- file
+  csv_data <- read.csv(file_path, check.names = F)
+  cihr_data <- bind_rows(cihr_data, csv_data)
+}
+
+# Data filtering/restructuring 
+names(cihr_data)
+#removes accents from var
+names(cihr_data)<-iconv(names(cihr_data), to = "ASCII", sub = "")
+```
+
+```{r}
+cihr_grants <- cihr_data %>% 
+  select('Key-Cl', 'Name-Nom', OrgNm, OrgID, ProvinceEN, CountryEN,
+         'CompetitionYear-AnneDuConcours', 'FiscalYear-AnneFinancire',
+         'AwardAmountinFY-MontantSubventiondeAF', 'TotalAwardAmount-MontantSubventionTotal',
+         ProgramIDProgramme, ProgramNameEN, FundingTypeEN, AreasOfScienceEN, ResearchClassEN,
+         TitreApplicationTitle, 'Keywords-MotsCls', 'Abstract-Rsum') %>% 
+  rename(abstract = 'Abstract-Rsum',
+         key = 'Key-Cl',
+         name = 'Name-Nom',
+         organization = OrgNm,
+         orgID = OrgID,
+         province = ProvinceEN,
+         country = CountryEN,
+         year_comp = 'CompetitionYear-AnneDuConcours', 
+         year_fisc = 'FiscalYear-AnneFinancire',
+         award_amount_FY = 'AwardAmountinFY-MontantSubventiondeAF',
+         award_amount_total = 'TotalAwardAmount-MontantSubventionTotal',
+         programID = ProgramIDProgramme,
+         program_name = ProgramNameEN,
+         funding_type = FundingTypeEN,
+         science_areas = AreasOfScienceEN,
+         research_class = ResearchClassEN,
+         title = TitreApplicationTitle,
+         keywords = 'Keywords-MotsCls') %>% 
+  mutate(abstract = ifelse(nchar(iconv(abstract, to = "ASCII", sub = "")) <= 30, NA, abstract))
+```
+
+```{r}
+
+
+hist(cihr_grants$year_comp)
+sum(is.na(cihr_grants$abstract))/nrow(cihr_data) # --> 0.28 NA
+names(cihr_grants)
+```
+
+```{r dataviz}
+#total grant funding by year
+cihr_grants %>%
+  group_by(year_fisc) %>%
+  summarise(montant_par_an = sum(award_amount_FY)) %>% 
+  ggplot(aes(x=substr(year_fisc, 1, 4), y=montant_par_an/1000000)) +
+  geom_point(alpha=.4, size=4, color="#880011") +
+  ggtitle("Année vs. Montant") +
+    theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
+  labs(x="Year", y="Montant, milliard de $ CA") 
+
+#median grant funds by year
+cihr_grants %>%
+  group_by(year_fisc) %>%
+  summarise(median_par_an = median(award_amount_FY)) %>% 
+  ggplot(aes(x=substr(year_fisc, 1, 4), y=median_par_an/1000)) +
+  geom_point(alpha=.4, size=4, color="#880011") +
+  ggtitle("Année vs. Bourse Mediane") +
+    theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
+  labs(x="Year", y="Montant, mille de $ CA") 
+
+#average total award by year
+cihr_grants %>%
+  group_by(year_fisc) %>%
+  summarise(montant_tot = mean(award_amount_total)) %>% 
+  ggplot(aes(x=substr(year_fisc, 1, 4), y=montant_tot/1000)) +
+  geom_point(alpha=.4, size=4, color="#880011") +
+  ggtitle("Année vs. Montant Totale") +
+    theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
+  labs(x="Year", y="Montant, mille de $ CA")
+```
+
+##Data reorg
+###cleaning
+```{r}
+#cleaning province 
+prov_terr= c('Alberta', 'Ontario', 'British Columbia', 'Québec', 'Qu<e9>bec','Nova Scotia', 'New Brunswick','Manitoba', 'Prince Edward Island', 'Saskatchewan', 'Newfoundland and Labrador','North West Territories','Nunavut', 'Yukon')
+
+cihr_grants = cihr_grants %>% 
+  mutate(province=ifelse(province %in% c('Unknown/Inconnu', 'Unknown'), 'Unknown', province),
+         province=ifelse(!province %in% c(prov_terr, 'Unknown'), 'Hors du Canada', province),
+         province=ifelse(province %in% c('Québec', 'Qu<e9>bec'), 'Quebec', province)) 
+
+prov= cihr_grants1%>% 
+  group_by(province) %>% 
+  summarise(ct=n()) 
+
+ggplot(prov) + geom_col(aes(y=reorder(province,ct), x= ct)) +
+    ggtitle("nombre des award/grant par province, toutes années")
+```
+
+```{r}
+#median, mean funds by year, grant type (award/grant), province
+#also count num of projects, distinct schools per province, year, award type
+
+grants_agg = cihr_grants %>% 
+  select(year_fisc, funding_type, award_amount_FY, province, orgID) %>%
+  group_by(year_fisc, province, funding_type) %>%
+  summarise(award_sum= sum(award_amount_FY),
+            award_median= median(award_amount_FY), 
+            awardct= n(),
+            orgct= n_distinct(orgID)) %>%
+  mutate(year_fisc=substr(year_fisc, 1, 4))
+```
+
+##data viz
+
+```{r}
+grants_agg %>%   
+  filter(funding_type=='Award Program') %>% 
+  ggplot(aes(x=year_fisc, y=award_sum/1000000, group=province)) +
+  geom_point(aes(  col=province)) +
+    geom_line(aes(  col=province)) +
+  ggtitle("Award Moyen par Année") +
+  theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
+  labs(x="Year", y="Montant, milliard de $ CA")
+```
+```{r}
+grants_agg %>%   
+  filter(funding_type=='Grant Program') %>% 
+  ggplot(aes(x=year_fisc, y=(award_sum/1000000), group=province)) +
+  geom_point(aes(col=province)) +
+    geom_line(aes( col=province)) +
+  ggtitle("Grant Moyen par Année") +
+  theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
+  labs(x="Year", y="Montant, milliard de $ CA")
+```
+
+```{r}
+grants_agg %>%   
+  filter(funding_type=='Award Program') %>% 
+  ggplot(aes(x=year_fisc, y=award_median/1000, group=province)) +
+  geom_point(aes( col=province)) +
+  # geom_line(aes( col=province)) +
+  ggtitle("Award Medien par Année") +
+  theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
+  labs(x="Year", y="Montant, mille de $ CA")
+```
+```{r}
+grants_agg %>%   
+  filter(funding_type=='Grant Program') %>% 
+  ggplot(aes(x=year_fisc, y=(award_median/1000), group=province)) +
+  geom_point(aes(col=province)) +
+    geom_line(aes( col=province)) +
+  ggtitle("Grant Medien par Année") +
+  theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
+  labs(x="Year", y="Montant, par mille de $ CA") 
+```
+
+```{r}
+#grant funding by province
+cihr_grants=cihr_grants %>% mutate(organization = iconv(cihr_grants$organization, to = "ASCII", sub = "")) 
+
+grants2 = cihr_grants%>% group_by(orgID, year_fisc) %>%
+  summarise(montant_par_an = sum(award_amount_FY)) %>%
+  ggplot(aes(x=substr(year_fisc, 1, 4), y=montant_par_an/1000000)) +
+  geom_point(alpha=.4, size=4) +
+  ggtitle("Annee vs. Montant") +
+    theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
+  labs(x="Year", y="Montant, milliard de $ CA") 
+```
+
+##################################################################################### 
+
+                              CIHR CO-APPLICANT Data
+
+##################################################################################### 
+
+```{r}
+# store all csv file names
+csv_co_app <- list.files("00.Data/CIHR/CoApplicants", pattern = "*.csv")
+
+# load csv files and merge them into one dataframe
+coapp_data <- data.frame() 
+setwd("00.Data/CIHR/CoApplicants")
+
+for (file in csv_co_app) {
+  file_path <- file
+  csv_data <- read.csv(file_path)
+  coapp_data <- bind_rows(coapp_data, csv_data)
+}
+
+
+# Data filtering/restructuring 
+names(coapp_data)
+
+cihr_coapp <- coapp_data %>% 
+  select(Key.Clé, CoAppNm, CoAppRoleCD, CoAppRoleEN, CoAppOrgID, CoAppOrgNm, 
+         ProvinceEN, CountryEN) %>% 
+  rename(key = Key.Clé, 
+         name_coapp = CoAppNm,
+         role_coapp = CoAppRoleEN,
+         role_coappID = CoAppRoleCD,
+         orgID_coapp = CoAppOrgID,
+         organization_coapp = CoAppOrgNm,
+         province = ProvinceEN, 
+         country = CountryEN)
+
+
+cihr_all <- merge(cihr_grants, cihr_coapp, by = "key", keep.all = TRUE) %>% 
+  distinct() 
+
+
+vars <- names(cihr_all) 
+vars1 <- vars[-8]
+
+cihr_slim <- cihr_all %>%
+  arrange(key, name, organization, orgID, province.x, country.x, year_comp,
+           award_amount_FY, award_amount_total, programID, program_name, funding_type,
+           science_areas, research_class, title, keywords, abstract, name_coapp, role_coappID,
+           role_coapp, orgID_coapp, organization_coapp, province.y, country.y, year_fisc) %>%
+  distinct(key, name, organization, orgID, province.x, country.x, year_comp,
+           award_amount_FY, award_amount_total, programID, program_name, funding_type,
+           science_areas, research_class, title, keywords, abstract, name_coapp, role_coappID,
+           role_coapp, orgID_coapp, organization_coapp, province.y, country.y, .keep_all = TRUE)
+
+```
