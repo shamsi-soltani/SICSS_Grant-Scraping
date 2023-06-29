@@ -1,0 +1,261 @@
+---
+title: "Untitled"
+author: "Firdaous Sbaï"
+date: "2023-06-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(foreign)
+library(haven)
+library(readr)
+library(readxl)
+
+install.packages("textcat")
+install.packages("fastText")
+install.packages("cld2")
+install.packages("cld3")
+
+library(textcat)
+library(fastText)
+library(cld2)
+library(cld3)
+
+library(tidytext)
+library(tm)
+library(maps)
+library(SnowballC)
+library(wordcloud)
+library(topicmodels)
+
+install.packages("tm")
+library(stm)
+library(lubridate)
+library(igraph)
+library(tidytext)
+library(textdata)
+library(cluster)
+library(tm)
+library(quanteda)
+library(quanteda.textstats)
+```
+
+
+## Introduction des données
+```{r}
+CRSH9810 <- read_excel("00.Data/CRSH_1998-2010.xls")
+CRSH1121 <- read_excel("00.Data/CRSH_2011-2021.xls")
+
+colnames(CRSH9810) <- CRSH9810[2, ] 
+CRSH9810 <- CRSH9810[-c(1, 2), ]
+
+colnames(CRSH1121) <- CRSH1121[2, ] 
+CRSH1121 <- CRSH1121[-c(1, 2), ]
+
+crshlist <- bind_rows(CRSH9810, CRSH1121)
+colnames(crshlist) <- c("Candidat", "Organisme", "Titre", "Montant", "Année", "Code_programme")
+
+```
+
+
+## Préparation de la base de données, identification de la langue, ajout de variable
+```{r}
+crshlist <- crshlist %>% mutate(Language = cld2::detect_language(Titre)) #variable langue, version 1
+crshlist <- crshlist %>% mutate(Language3 = cld3::detect_language(Titre)) #variable langue, version 2
+
+crshlist %>% group_by(Language) %>% count() # identifier si les langues autres que fr/en sont nombreuses
+crshlist %>% select(Language) %>% unique()# identifier si les langues autres que fr/en sont nombreuses
+class(crshlist$Language)
+
+# transformer les langues erronées + créer variable langue corrigée qui prend la version optimale lors des NA
+crshlist <- crshlist %>% mutate(crshlist, Language_corr = case_when(
+   Language == "af" ~ "en",
+   Language == "cs" ~ "en",
+   Language == "da" ~ "fr",
+   Language == "vi" ~ "en",
+   Language == "tr" ~ "en",
+   Language == "sv" ~ "fr",
+   Language == "ro" ~ "fr",
+   Language == "no" ~ "fr",
+   Language == "nl" ~ "en",
+   Language == "hu" ~ "en",
+   Language == "hr" ~ "en",
+   Language == "gl" ~ "fr",
+   Language == "en" ~ "en",
+   Language == "fr" ~ "fr",
+   Language == "ca" ~ "mix",
+   Language == "de" ~ "mix",
+   Language == "es" ~ "mix",
+   Language == "id" ~ "en",
+   Language == "fi" ~ NA,
+   Language3 == "fr" & is.na(Language) ~ "fr",
+   Language3 == "en" & is.na(Language) ~ "en"
+))
+
+# enlever les subventions sans titres
+crshlist <- crshlist %>% filter(!Titre == "No Title - Aucun titre") 
+crshlist <- crshlist %>% filter(!Titre == "No Title - Aucun Titre")
+crshlist <- crshlist %>% filter(!Titre == "No title - Aucun titre")
+crshlist <- crshlist %>% filter(!Titre == "No title")
+crshlist[95,9] <- "fr"
+
+sum(is.na(crshlist$Language_corr))
+
+# prendre seulement les subventions codées en fr/en
+crshenfr <- crshlist %>% filter(Language_corr %in% c("en", "fr"))
+
+crshenfr %>% group_by(Language_corr) %>% count()
+
+# modifier les 2 variables numériques qui sont reconnues comme du textes (transformer en numérique)
+crshenfr$Code_programme <- as.numeric(crshenfr$Code_programme)
+crshenfr$Montant <- as.numeric(crshenfr$Montant)
+
+# créer une variable qui rajoute le nombre de subventions reçues par candidat
+crshenfr <- crshenfr %>% group_by(Candidat) %>% 
+  mutate(Count_candidat = n()) %>% ungroup()
+
+# régressions linéaires entre le montant reçu et le nombre de subvention reçues OU la langue
+summary(lm(crshenfr$Montant ~ crshenfr$Count_candidat))
+summary(lm(crshenfr$Montant ~ crshenfr$Language_corr))
+
+ggplot(crshenfr) +
+       aes(x = Language_corr, y = Montant) +
+       geom_boxplot()
+
+# créer une variable catégorique pour le montant
+summary(crshenfr$Montant)
+crshenfr <- crshenfr %>% mutate(Montant_cat = case_when(
+  Montant > 1000000 ~ "Million",
+  Montant >= 500000 ~ "500k-1M",
+  Montant >= 100000 ~ "100k-500k",
+  Montant >= 50000 ~ "50k-100k",
+  Montant < 50000 ~ "Under 500k"
+))
+
+# comparer la catégorie de montant par langue
+crshenfr %>% group_by(Language_corr) %>% count(Montant_cat)
+
+
+```
+
+## Séparation des textes par langues  
+```{r}
+francais <- crshenfr %>% filter(Language_corr == "fr")
+anglais <- crshenfr %>% filter(Language_corr == "en")
+
+# créer identifiant unique 
+francais$id <- 1:length(francais$Candidat)
+anglais$id <- 1:length(anglais$Candidat)
+
+```
+
+## Analyse des titres
+```{r}
+corpusfr <- Corpus(VectorSource(as.vector(francais$Titre))) 
+corpusen <- Corpus(VectorSource(as.vector(anglais$Titre))) 
+
+fr_dtm <- DocumentTermMatrix(corpusfr, control = list(wordLengths = c(3, Inf))) 
+en_dtm <- DocumentTermMatrix(corpusen, control = list(wordLengths = c(3, Inf))) 
+
+fr_titres_text <- 
+  francais %>% 
+  select(id, Titre) %>% 
+  unnest_tokens("word", Titre)
+
+en_titres_text <- 
+  anglais %>% 
+  select(id, Titre) %>% 
+  unnest_tokens("word", Titre)
+
+install.packages("stopwords")
+library(stopwords)
+install.packages("lsa")
+library(lsa)
+data(stopwords_fr)
+data(stop_words)
+
+stopwords_fr <- tibble(word = stopwords_fr)
+
+fr_titres_text <- 
+  fr_titres_text %>% 
+  anti_join(stopwords_fr)
+
+fr_titres_text %>%          
+  count(word) %>% 
+  arrange(desc(n))
+
+en_titres_text <- 
+  en_titres_text %>% 
+  anti_join(stop_words)
+  
+en_titres_text %>%          
+  count(word) %>% 
+  arrange(desc(n))
+
+
+# Créer la dtm pour le topic modelling
+
+fr_titres_dtm <- 
+  fr_titres_text %>% 
+  count(id, word) %>% 
+  cast_dtm(id, word, n)
+
+en_titres_dtm <- 
+  en_titres_text %>% 
+  count(id, word) %>% 
+  cast_dtm(id, word, n)
+```
+
+## Topic modelling
+```{r}
+fr_lda50 <- LDA(fr_titres_dtm, k = 50, control = list(seed = 3425))
+fr_lda12 <- LDA(fr_titres_dtm, k = 12, control = list(seed = 3425))
+
+en_lda <- LDA(en_titres_dtm, k = 50, control = list(seed = 450))
+
+fr_topics <- ap_topics <- tidy(fr_lda12, matrix = "beta")
+
+fr_topics_terms <-
+  fr_topics %>% 
+  group_by(topic) %>% 
+  top_n(10, beta) %>% 
+  ungroup() %>% 
+  arrange(topic, desc(beta)) 
+
+fr_topics_terms
+
+
+stm_corpus_en <- textProcessor(documents=anglais$Titre,
+                                 metadata = anglais,
+                                 lowercase = TRUE, #turns all text to lower case
+                                 removestopwords = TRUE, # removes stop words using the SMART stopword list (for English)
+                                 removenumbers = TRUE, # self-explanatory
+                                 removepunctuation = TRUE, # self-explanatory
+                                 stem = TRUE, # stemming using SnowballC stemmer (for English)
+                                 wordLengths = c(3,Inf), 
+                                 sparselevel = 1, #removes terms where at least sparselevel proportion of the entries are 0
+                                 language = "en", # sets the language, which helps choose default stopwords
+                                 verbose = TRUE, # prints info as corpus is processing
+                                 onlycharacter = FALSE, 
+                                 striphtml = FALSE, 
+                                 customstopwords = NULL # 	A character vector containing words to be removed
+                                )
+
+
+en_stm_nocovar <- stm(documents = stm_corpus_en$documents, 
+                          vocab = stm_corpus_en$vocab,
+                          K = 50,
+                          max.em.its = 100,
+                          data = stm_corpus_en$meta,
+                          init.type = "Spectral", #this method helps reduce how often you get non-convergence.
+                          seed = 4
+)
+
+```
+
