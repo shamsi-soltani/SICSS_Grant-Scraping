@@ -36,7 +36,6 @@ for (file in csv_grants) {
   cihr_data <- bind_rows(cihr_data, csv_data)
 }
 
-guess_encoding("C:/Users/Leo/OneDrive/SICSS_R_Project/00.Data/CIHR/Grants/cihr_grants_award_200001.csv")
 
 # Data filtering/restructuring 
 
