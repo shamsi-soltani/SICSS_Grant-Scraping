@@ -1,0 +1,465 @@
+---
+title: "CIHR Data Import"
+author: "Leonard"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+################################################################################
+Data: CIHR Grants and Awards 2000 - 2021 +Co-applicants
+Source: https://open.canada.ca/data/en/dataset/49edb1d7-5cb4-4fa7-897c-515d1aad5da3
+################################################################################
+
+
+```{r}
+library(readr)
+library(tidyverse)
+library(haven)
+```
+
+
+#####################################################################################
+                              CIHR GRANTS Data Import
+#####################################################################################
+```{r}
+# store all csv file names
+csv_grants <- list.files("00.Data/CIHR/Grants", pattern = "*.csv")
+
+# load csv files and merge them into one dataframe
+cihr_data <- data.frame() 
+
+for (file in csv_grants) {
+  file_path <- file
+  csv_data <- read.csv(paste0("00.Data/CIHR/Grants/", file_path), fileEncoding = "Windows-1252")
+  cihr_data <- bind_rows(cihr_data, csv_data)
+}
+
+guess_encoding("C:/Users/Leo/OneDrive/SICSS_R_Project/00.Data/CIHR/Grants/cihr_grants_award_200001.csv")
+
+# Data filtering/restructuring 
+
+cihr_grants <- cihr_data %>% 
+  select(Key.Clé, Name.Nom, OrgNm, OrgID, ProvinceEN, CountryEN,
+         CompetitionYear.AnnéeDuConcours, FiscalYear.AnnéeFinancière,
+         AwardAmountinFY.MontantSubventiondeAF, TotalAwardAmount.MontantSubventionTotal,
+         ProgramIDProgramme, ProgramNameEN, FundingTypeEN, AreasOfScienceEN, ResearchClassEN,
+         TitreApplicationTitle, Keywords.MotsClés, Abstract.Résumé) %>% 
+  rename(abstract = Abstract.Résumé,
+         key = Key.Clé,
+         name = Name.Nom,
+         organization = OrgNm,
+         orgID = OrgID,
+         province = ProvinceEN,
+         country = CountryEN,
+         year_comp = CompetitionYear.AnnéeDuConcours, 
+         year_fisc = FiscalYear.AnnéeFinancière,
+         award_amount_FY = AwardAmountinFY.MontantSubventiondeAF,
+         award_amount_total = TotalAwardAmount.MontantSubventionTotal,
+         programID = ProgramIDProgramme,
+         program_name = ProgramNameEN,
+         funding_type = FundingTypeEN,
+         science_areas = AreasOfScienceEN,
+         research_class = ResearchClassEN,
+         title = TitreApplicationTitle,
+         keywords = Keywords.MotsClés) %>%
+  mutate(abstract = ifelse(nchar(abstract) <= 30, NA, abstract),
+         year_comp = as.numeric(substr(year_comp, 1, 4)),
+         year_fisc = as.numeric(substr(year_fisc, 1, 4))) %>%
+  arrange(key, year_fisc) %>%
+  distinct(key, .keep_all = TRUE) # for text analysis: 
+                                    # keep only the row from dataset with the earliest fiscal year
+
+
+
+hist(cihr_grants$year_comp)
+sum(is.na(cihr_grants$abstract))/nrow(cihr_data) # --> 0.28 NA
+names(cihr_grants)
+```
+
+
+
+
+
+#####################################################################################
+                              CIHR CO-APPLICANT Data Import
+#####################################################################################
+
+```{r}
+# store all csv file names
+csv_co_app <- list.files("00.Data/CIHR/CoApplicants", pattern = "*.csv")
+
+# load csv files and merge them into one dataframe
+coapp_data <- data.frame() 
+
+for (file in csv_co_app) {
+  file_path <- file
+  csv_data <- read.csv(paste0("00.Data/CIHR/CoApplicants/", file_path), fileEncoding = "Windows-1252")
+  coapp_data <- bind_rows(coapp_data, csv_data)
+}
+
+
+# Data filtering/restructuring 
+
+cihr_coapp <- coapp_data %>% 
+  select(Key.Clé, CoAppNm, CoAppRoleCD, CoAppRoleEN, CoAppOrgID, CoAppOrgNm, 
+         ProvinceEN, CountryEN) %>% 
+  rename(key = Key.Clé, 
+         name_coapp = CoAppNm,
+         role_coapp = CoAppRoleEN,
+         role_coappID = CoAppRoleCD,
+         orgID_coapp = CoAppOrgID,
+         organization_coapp = CoAppOrgNm,
+         province_coapp = ProvinceEN, 
+         country_coapp = CountryEN)
+```
+
+
+#####################################################################################
+                              CIHR Data Merging
+#####################################################################################
+
+```{r}
+all_cihr_data <- full_join(cihr_grants, cihr_coapp, by = "key")
+
+```
+
+
+#####################################################################################
+                              Libraries and Testing
+#####################################################################################
+```{r}
+library(tidyverse)
+library(lubridate)
+library(stringr)
+library(forcats)
+library(modelr)
+library(tm)
+library(SnowballC)
+library(tidytext)
+library(wordcloud)
+library(stopwords)
+library(quanteda)
+library(quanteda.textmodels)
+library(quanteda.textstats)
+library(quanteda.textplots)
+library(cld2)
+
+
+
+amount_per_year <- cihr_grants %>% 
+  group_by(year_fisc) %>% 
+  summarise(award_amount = sum(award_amount_FY))
+ggplot(amount_per_year, aes(year_fisc, award_amount)) +
+  geom_line()
+
+
+
+
+# Test dfm with sample: abstracts
+sample <- slice_sample(cihr_grants, n = 100)
+detect_language(sample$abstract[12])
+
+
+test_dfm <- sample %>% 
+  filter(!is.na(abstract)) %>% 
+  mutate(language = detect_language(abstract)) %>%
+  corpus(docid_field = "key", text_field = "abstract",  unique_docnames = FALSE) %>% 
+    tokens(remove_symbols = TRUE, remove_numbers = TRUE, remove_url = TRUE, remove_punct = TRUE) %>% 
+    tokens_tolower() %>% 
+    tokens_remove(stopwords("en", source = "stopwords-iso")) %>% 
+    tokens_remove(stopwords("fr", source = "stopwords-iso")) %>% 
+    dfm()
+
+
+```
+
+
+
+
+
+#################################################################################
+                              Abtract Analysis
+#################################################################################
+
+```{r}
+# Dfm of Abstracts
+abstracts_corpus <- cihr_grants %>% 
+  filter(!is.na(abstract)) %>% 
+  mutate(language = detect_language(abstract)) %>%
+  corpus(docid_field = "key", text_field = "abstract",  unique_docnames = FALSE) 
+
+
+
+
+# wordcloud french vs english
+corpus_subset(abstracts_corpus, 
+              language %in% c("en", "fr")) %>%
+              tokens(remove_symbols = TRUE, remove_numbers = TRUE, remove_url = TRUE, remove_punct = TRUE) %>%
+              tokens_tolower() %>% 
+              tokens_remove(stopwords("en", source = "stopwords-iso")) %>% 
+              tokens_remove(stopwords("fr", source = "stopwords-iso")) %>% 
+              dfm() %>%
+              dfm_group(groups = language) %>%
+              dfm_trim(min_termfreq = 10, verbose = FALSE) %>%
+              textplot_wordcloud(comparison = TRUE, max_words = 100, color = c("#F8766D", "#0CB702"))
+
+
+```
+```{r}
+# Merge dfm with Co-applicant data
+#merged_data_ab <- merge(abstracts_dfm@docvars, cihr_coapp, by.x = "docname_", by.y = "key")
+#docvars(abstracts_dfm, c("name_coapp", "role_coapp", "orgID_coapp", "organization_coapp", "province.y", "country.y")) <- merged_data_ab[,c("name_coapp", "role_coapp", "orgID_coapp", "organization_coapp", "province.y", "country.y")]
+
+
+```
+
+
+#################################################################################
+                              Title Analysis
+#################################################################################
+
+```{r}
+# Dfm of Titles
+titles_dfm <- cihr_grants %>% 
+  filter(!is.na(title)) %>% 
+  mutate(language = detect_language(title)) %>%
+  corpus(docid_field = "key", text_field = "title",  unique_docnames = FALSE) %>% 
+    tokens(remove_symbols = TRUE, remove_numbers = TRUE, remove_url = TRUE, remove_punct = TRUE) %>% 
+    tokens_tolower() %>% 
+    tokens_remove(stopwords("en", source = "stopwords-iso")) %>% 
+    tokens_remove(stopwords("fr", source = "stopwords-iso")) %>% 
+    tokens_remove(c("unspecified", "non", "spécifié", "health", "role", "canada", "chair")) %>% 
+    dfm()
+
+
+table(titles_dfm@docvars$language) 
+
+
+# Corpus of titles
+titles_corpus <- cihr_grants %>% 
+  filter(!is.na(title)) %>% 
+  mutate(language = detect_language(title)) %>%
+  corpus(docid_field = "key", text_field = "title",  unique_docnames = FALSE) 
+```
+
+
+```{r}
+# wordcloud title words french/english
+corpus_subset(titles_corpus, 
+              language %in% c("en", "fr")) %>%
+              tokens(remove_symbols = TRUE, remove_numbers = TRUE, remove_url = TRUE, remove_punct = TRUE) %>%
+              tokens_tolower() %>% 
+              tokens_remove(stopwords("en", source = "stopwords-iso")) %>% 
+              tokens_remove(stopwords("fr", source = "stopwords-iso")) %>% 
+              dfm() %>%
+              dfm_group(groups = language) %>%
+              textplot_wordcloud(comparison = TRUE, max_words = 100, color = c("#F8766D", "#0CB702"))
+```
+
+
+```{r}
+# most common words in titles
+titles_freq_by_year <- textstat_frequency(titles_dfm, groups = docvars(titles_dfm, "year_comp")) 
+titles_freq_by_year$group <- as.numeric(titles_freq_by_year$group)
+
+
+subset(titles_freq_by_year, rank == 1 | rank == 2 | rank == 3) %>% 
+  select(feature, group) %>%
+  arrange() 
+
+
+ggplot(subset(titles_freq_by_year, (rank == 1 | rank == 2 | rank == 3) & (group >= 1995)), 
+       aes(group, feature, fill = rank)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "darkblue", high = "lightblue") +
+  xlab("Year") +
+  ylab("Word") +
+  ggtitle("Ranking of most common words in CIHR funded projects titles per year") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+
+
+
+
+
+
+#################################################################################
+                              Keyword Analysis
+#################################################################################
+```{r}
+# Dfm of Keywords
+keywords_dfm <- cihr_grants %>% 
+  filter(!is.na(keywords)) %>% 
+  mutate(language = detect_language(title)) %>%
+  corpus(docid_field = "key", text_field = "keywords",  unique_docnames = FALSE) %>% 
+    tokens(remove_symbols = TRUE, remove_numbers = TRUE, remove_url = TRUE, remove_punct = TRUE) %>% 
+    tokens_tolower() %>% 
+    tokens_remove(stopwords("en", source = "stopwords-iso")) %>% 
+    tokens_remove(stopwords("fr", source = "stopwords-iso")) %>% 
+    tokens_remove(c("health", "unspecified", "spécifié")) %>% 
+    dfm()
+
+keywords_corpus <- cihr_grants %>% 
+  filter(!is.na(keywords)) %>% 
+  mutate(language = detect_language(title)) %>%
+  corpus(docid_field = "key", text_field = "keywords",  unique_docnames = FALSE) 
+
+```
+
+
+```{r warning=FALSE}
+# wordcloud french vs english
+corpus_subset(keywords_corpus, 
+              language %in% c("en", "fr")) %>%
+              tokens(remove_symbols = TRUE, remove_numbers = TRUE, remove_url = TRUE, remove_punct = TRUE) %>%
+              tokens_tolower() %>% 
+              tokens_remove(stopwords("en", source = "stopwords-iso")) %>% 
+              tokens_remove(stopwords("fr", source = "stopwords-iso")) %>% 
+              tokens_remove(c("health", "sante")) %>% 
+              dfm() %>%
+              dfm_group(groups = language) %>%
+              textplot_wordcloud(comparison = TRUE, max_words = 100, color = c("#F8766D", "#0CB702"))
+```
+
+```{r warning=FALSE}
+# wordcloud provinces
+corpus_subset(keywords_corpus, 
+              province %in% c("Ontario", "British Columbia", "Québec", "Alberta")) %>%
+              tokens(remove_symbols = TRUE, remove_numbers = TRUE, remove_url = TRUE, remove_punct = TRUE) %>%
+              tokens_tolower() %>% 
+              tokens_remove(stopwords("en", source = "stopwords-iso")) %>% 
+              tokens_remove(stopwords("fr", source = "stopwords-iso")) %>%
+              tokens_remove(c("health", "sante")) %>% 
+              dfm() %>%
+              dfm_group(groups = province) %>%
+              textplot_wordcloud(comparison = TRUE, min_count = 5,  max_words = 200, color = c("#F8766D", "#0CB702", "#00A9FF", "#CD9600"))
+
+```
+
+
+
+```{r}
+# Most common keywords for each year
+keyword_freq_by_year <- textstat_frequency(keywords_dfm, groups = docvars(keywords_dfm, "year_comp")) 
+keyword_freq_by_year$group <- as.numeric(keyword_freq_by_year$group)
+
+subset(keyword_freq_by_year, rank == 1 | rank == 2 | rank == 3) %>% 
+  select(feature, group) %>%
+  arrange() 
+
+
+# Tile diagram
+ggplot(subset(keyword_freq_by_year, rank == 1 | rank == 2 | rank == 3 | rank == 4 | rank == 5), aes(group, feature, fill = rank)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "darkblue", high = "lightblue") +
+  xlab("Year") +
+  ylab("Word") +
+  ggtitle("Ranking of most common keywords in CIHR funded projects per year") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+
+```
+
+
+
+
+
+```{r}
+# Most common keywords for each year per province 
+
+# function to filter keyword_corpus by province and creat tileplot
+top_keywords_province_plot <- function(province_input){
+             
+  province_filtered_dfm <-  corpus_subset(keywords_corpus, 
+                            province %in% paste0(province_input) & (year_comp >= 1999)) %>%
+                            tokens(remove_symbols = TRUE, remove_numbers = TRUE, remove_url = TRUE, remove_punct = TRUE) %>%
+                            tokens_tolower() %>% 
+                            tokens_remove(stopwords("en", source = "stopwords-iso")) %>% 
+                            tokens_remove(stopwords("fr", source = "stopwords-iso")) %>%
+                            tokens_remove(c("health", "sante", "unspecified", "spécifié")) %>% 
+                            dfm() 
+  
+  keyword_freq_by_year <- textstat_frequency(province_filtered_dfm, groups = docvars(province_filtered_dfm, "year_comp")) 
+  keyword_freq_by_year$group <- as.numeric(keyword_freq_by_year$group)
+  
+  tile_plot <- ggplot(subset(keyword_freq_by_year, rank == 1 | rank == 2 | rank == 3), aes(group, feature, fill = rank)) +
+                geom_tile(color = "white") +
+                scale_fill_gradient(breaks = c(1, 2, 3), low = "darkblue", high = "lightblue") +
+                xlab("Year") +
+                ylab("Word") +
+                ggtitle(paste("Ranking of most common keywords in CIHR funded projects per year in", province_input)) +
+                theme_minimal() +
+                theme(plot.title = element_text(size = 11), axis.text.x = element_text(angle = 45, hjust = 1)) 
+                
+  return(tile_plot)
+}
+
+
+
+# apply function example Ontario
+top_keywords_province_plot("Ontario")
+
+
+# apply function to 4 provinces + create 1 common plot
+
+library(ggpubr)
+
+tile_keyw_ontario <- top_keywords_province_plot("Ontario") + 
+  labs(title = "Ontario") +
+  theme(plot.title = element_text(face = "bold"))
+
+tile_keyw_quebec <- top_keywords_province_plot("Québec") + 
+  labs(title = "Québec") +
+  theme(plot.title = element_text(face = "bold"))
+
+tile_keyw_britcol <- top_keywords_province_plot("British Columbia")  + 
+  labs(title = "British Columbia") +
+  theme(plot.title = element_text(face = "bold"))
+
+tile_keyw_alberta <- top_keywords_province_plot("Alberta") + 
+  labs(title = "Alberta") +
+  theme(plot.title = element_text(face = "bold"))
+
+
+tile_grid_provinces <- ggarrange(tile_keyw_ontario, tile_keyw_quebec, tile_keyw_britcol, 
+                                    tile_keyw_alberta, common.legend = TRUE, legend="right")
+annotate_figure(
+  tile_grid_provinces,
+  top = "Ranking of most common keywords in CIHR funded projects per year in Canadian Provinces")
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+``` {r}
+# Liste_Universités_Provinces
+list_province <- cihr_grants %>% 
+  select(organization, orgID, province, country) %>% 
+  distinct()
+  
+write.csv(list_province, "Liste_Universités_Provinces.csv")
+```
+
+
+
+
+
+
+
+
+
+
