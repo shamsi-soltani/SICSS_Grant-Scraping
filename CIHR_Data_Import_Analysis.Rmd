@@ -352,8 +352,7 @@ subset(keyword_freq_by_year, rank == 1 | rank == 2 | rank == 3) %>%
   arrange() 
 
 
-# Tile diagram
-ggplot(subset(keyword_freq_by_year, rank == 1 | rank == 2 | rank == 3 | rank == 4 | rank == 5), aes(group, feature, fill = rank)) +
+tile_diagram_keywords <- ggplot(subset(keyword_freq_by_year, rank == 1 | rank == 2 | rank == 3), aes(group, feature, fill = rank)) +
   geom_tile(color = "white") +
   scale_fill_gradient(low = "darkblue", high = "lightblue") +
   xlab("Year") +
@@ -361,6 +360,21 @@ ggplot(subset(keyword_freq_by_year, rank == 1 | rank == 2 | rank == 3 | rank == 
   ggtitle("Ranking of most common keywords in CIHR funded projects per year") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+
+
+library(gganimate)
+library(gifski)
+
+
+# Animated Tile diagram keywords 
+
+animated_tile <- tile_diagram_keywords +
+              transition_components(group) +
+                enter_fade() +
+                shadow_mark(alpha = 0.8, size = 10) 
+
+animate(animated_tile, height = 400, width = 600, fps = 30, duration = 20,
+        end_pause = 60, renderer = gifski_renderer())
 
 ```
 
